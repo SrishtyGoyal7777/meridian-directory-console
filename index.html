@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Meridian Directory Accuracy Console (Demo)</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#031335;--navy2:#072669;--blue:#2a6af1;--blue2:#5386f4;--blue3:#a9c2f9;--aqua:#1bbce4;--purple:#7034ea;--orange:#ec700a;--t1:#29303d;--t2:#465167;--t3:#5a6884;--bg:#f5f6fa;--card:#fff;--ok:#73b124;--bad:#e25f5a;--line:#e2e8f7;--okt:#4a7a0a;--badt:#b3302b;--ort:#a84d00}
+*{box-sizing:border-box}
+body{margin:0;font-family:'Satoshi','Inter',system-ui,-apple-system,'Segoe UI',sans-serif;background:var(--bg);color:var(--t1);font-size:14px;line-height:1.45}
+h1,h2,h3{margin:0;color:var(--navy2);font-weight:800;letter-spacing:-.01em}
+h1{font-size:22px}h2{font-size:16px}h3{font-size:14px}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--aqua);outline-offset:2px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.shell{display:grid;grid-template-columns:84px minmax(0,1fr);min-height:100vh}
+.rail{background:var(--navy);position:sticky;top:0;height:100vh;display:flex;flex-direction:column;align-items:center;padding:14px 0;gap:4px}
+.logo{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--blue),var(--purple));color:#fff;display:grid;place-items:center;font-weight:900;margin-bottom:10px}
+.nb{width:70px;padding:8px 0;border-radius:12px;color:var(--blue3);background:none;border:0;font-size:10px;font-weight:700;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px}
+.nb svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.nb:hover{background:#0b1f52}.nb.on{background:var(--blue);color:#fff}
+.main{min-width:0}
+.top{box-shadow:0 1px 0 rgba(7,38,105,.04);display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding:14px 22px;background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}
+.top .sp{flex:1}
+.ask{display:flex;gap:6px;align-items:center;background:var(--bg);border:1px solid var(--blue3);border-radius:999px;padding:3px 4px 3px 12px;min-width:260px}
+.ask input{border:0;background:none;flex:1;min-width:120px;outline:none}
+.ask:focus-within{outline:3px solid var(--aqua)}
+.page{padding:20px 22px 40px;max-width:1280px}
+.btn{border:1px solid var(--blue3);background:#fff;color:var(--navy2);border-radius:999px;padding:7px 16px;font-weight:700;cursor:pointer}
+.btn:hover{background:#eef3ff}
+.btn.primary{background:linear-gradient(90deg,var(--blue),var(--purple));color:#fff;border:0}
+.btn.primary:hover{filter:brightness(1.08)}
+.btn.solid{background:var(--blue);color:#fff;border:0}
+.btn.danger{border-color:var(--bad);color:var(--badt)}
+.btn.sm{padding:4px 12px;font-size:12px}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.chip{display:inline-flex;gap:6px;align-items:center;background:#eaf0ff;color:var(--navy2);border-radius:999px;padding:3px 10px;font-size:12px;font-weight:700}
+.chip button{border:0;background:none;cursor:pointer;color:var(--navy2);font-weight:900}
+.grid{display:grid;gap:14px}
+.kpis{grid-template-columns:repeat(auto-fit,minmax(180px,1fr));margin-bottom:14px}
+.kpi{background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px 16px;text-align:left;cursor:pointer;box-shadow:0 1px 2px rgba(7,38,105,.04),0 8px 24px -16px rgba(7,38,105,.18);transition:border-color .15s,transform .15s}
+.kpi:hover{border-color:var(--blue2);transform:translateY(-2px)}
+.kpi .l{color:var(--t3);font-size:12px;font-weight:600}.kpi .v{font-size:26px;font-weight:900;color:var(--navy2);line-height:1.15}.kpi .v.txt{font-size:17px}.kpi .s{font-size:11px;color:var(--t3)}
+.card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px 18px;box-shadow:0 1px 2px rgba(7,38,105,.04),0 8px 24px -16px rgba(7,38,105,.18)}
+.card h2{margin-bottom:10px}
+.two{grid-template-columns:minmax(0,1fr) minmax(0,1.4fr)}
+.three{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+@media(max-width:900px){.two{grid-template-columns:1fr}}
+.scroll{overflow-x:auto}
+table{border-collapse:collapse;width:100%}
+th,td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--line);font-size:13px;white-space:nowrap}
+th{color:var(--t3);font-size:12px;font-weight:700}
+th button{background:none;border:0;font-weight:700;color:var(--t3);cursor:pointer;padding:0}
+tr.click:hover{background:#f3f7ff;cursor:pointer}
+.pill{display:inline-block;border-radius:999px;padding:2px 10px;font-size:11px;font-weight:800}
+.p-ok{background:#e9f5d6;color:var(--okt)}.p-nv{background:#e3ecff;color:var(--navy2)}.p-in{background:#ffe9d6;color:var(--ort)}.p-rm{background:#fde1df;color:var(--badt)}.p-gr{background:#edf0f6;color:var(--t2)}.p-sim{background:#efe7ff;color:#5320b8}
+.tabs{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap}
+.tab{border:1px solid var(--line);background:#fff;border-radius:999px;padding:4px 14px;font-weight:700;cursor:pointer;color:var(--t2)}
+.tab.on{background:var(--navy2);color:#fff;border-color:var(--navy2)}
+label{display:block;font-weight:700;font-size:12px;color:var(--t2);margin-bottom:3px}
+input[type=text],input[type=number],input[type=date],select,textarea{width:100%;border:1px solid #c9d4ee;border-radius:10px;padding:7px 10px;background:#fff}
+.err{color:var(--badt);font-size:12px;font-weight:600;margin-top:3px}
+.fld{margin-bottom:10px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}
+.muted{color:var(--t3)}
+.hero{background:radial-gradient(1200px 500px at 80% -10%,#2a3fb0 0,transparent 60%),var(--navy);color:#fff;padding:48px 30px 40px;border-radius:0;min-height:100vh;display:flex;flex-direction:column;justify-content:center}
+.hero h1{color:#fff;font-size:40px;font-weight:900;max-width:800px;line-height:1.12;margin-bottom:14px}
+.hero p{color:#cdd9f7;max-width:680px;font-size:15px}
+.badge-sim{display:inline-block;background:rgba(27,188,228,.12);color:#5fe3ff;border:1px solid rgba(95,227,255,.5);border-radius:999px;padding:4px 14px;font-weight:700;font-size:12px;margin-bottom:18px;letter-spacing:.02em;width:fit-content}
+.roles{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin-top:22px}
+.role{background:rgba(255,255,255,.96);color:var(--t1);border:0;border-radius:18px;padding:18px;text-align:left;cursor:pointer;transition:transform .15s,box-shadow .15s;box-shadow:0 18px 40px -24px rgba(0,0,0,.6)}
+.role:hover{transform:translateY(-3px);box-shadow:0 0 0 2px var(--aqua),0 22px 44px -24px rgba(0,0,0,.7)}
+.role b{color:var(--navy2);font-size:16px;display:block}
+.bar{height:8px;border-radius:99px;background:#e8eefc;overflow:hidden}.bar i{display:block;height:100%;background:var(--blue)}
+.tile{border:0;border-radius:6px;aspect-ratio:1;font-weight:800;font-size:11px;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.tilegrid{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:4px}
+.warn{background:#fff3e6;border:1px solid var(--orange);border-radius:12px;padding:10px 12px;margin-bottom:12px;color:var(--ort);font-weight:600}
+.bad{background:#fdeceb;border:1px solid var(--bad);border-radius:12px;padding:10px 12px;margin-bottom:12px;color:var(--badt);font-weight:600}
+.okb{background:#eef7dd;border:1px solid var(--ok);border-radius:12px;padding:10px 12px;margin-bottom:12px;color:var(--okt);font-weight:600}
+.tl{border-left:2px solid var(--blue3);margin-left:6px;padding-left:12px}.tl div{margin-bottom:10px}
+.overlay{position:fixed;inset:0;background:rgba(3,19,53,.55);display:grid;place-items:center;z-index:50;padding:16px}
+.dlg{background:#fff;border-radius:16px;padding:20px;max-width:560px;width:100%;max-height:90vh;overflow:auto}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(420px,100%);background:#fff;z-index:40;box-shadow:-8px 0 30px rgba(3,19,53,.25);padding:20px;overflow:auto}
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:var(--navy);color:#fff;padding:10px 18px;border-radius:999px;z-index:60;font-weight:600;max-width:90vw}
+.toast.bad{background:var(--badt)}
+.legend span{margin-right:12px;font-size:12px;color:var(--t2)}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:4px}
+@media(max-width:820px){.shell{grid-template-columns:minmax(0,1fr)}.rail{position:fixed;bottom:0;left:0;right:0;top:auto;height:auto;flex-direction:row;overflow-x:auto;z-index:20;padding:6px;justify-content:flex-start}.logo{display:none}.main{padding-bottom:84px}.top{position:static;padding:12px}.page{padding:14px 12px 30px}.hero{padding:30px 16px}.hero h1{font-size:26px}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="live" class="sr" aria-live="polite"></div>
+<script>
+'use strict';
+/* =====================================================================
+   LOGIC LAYER (DOM-free): data generator, rules, store mutations, tests
+   ===================================================================== */
+const SEED=20261111;
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+const ASOF_ISO='2026-11-11';
+const toDay=iso=>{const [y,m,d]=iso.split('-').map(Number);return Math.round(Date.UTC(y,m-1,d)/864e5)};
+const fromDay=n=>new Date(n*864e5).toISOString().slice(0,10);
+const ASOF=toDay(ASOF_ISO);
+function bizDays(fromIso,toIso){const a=toDay(fromIso),b=toDay(toIso);let c=0;for(let d=a+1;d<=b;d++){const w=new Date(d*864e5).getUTCDay();if(w!==0&&w!==6)c++}return c}
+function npiValid(n){n=String(n);if(!/^\d{10}$/.test(n))return false;const s='80840'+n;let sum=0,alt=false;for(let i=s.length-1;i>=0;i--){let d=+s[i];if(alt){d*=2;if(d>9)d-=9}sum+=d;alt=!alt}return sum%10===0}
+function npiMake(b9){for(let c=0;c<10;c++){const n=String(b9)+c;if(npiValid(n))return n}}
+const DEF={cycle:90,hospCycle:365,breachDays:5,cap:100,high:50,med:25,w:{never:40,past:30,p75:15,r120:15,r60:7,addr:20,claims:15,out2:10}};
+const STATES=['CA','TX','FL','NY','PA','OH','IL','GA','NC','MI','AZ','WA'];
+const SNAME={california:'CA',texas:'TX',florida:'FL','new york':'NY',pennsylvania:'PA',ohio:'OH',illinois:'IL',georgia:'GA','north carolina':'NC',michigan:'MI',arizona:'AZ',washington:'WA'};
+const TILE={WA:[0,0],IL:[4,1],MI:[5,1],NY:[7,1],CA:[0,2],OH:[5,2],PA:[6,2],AZ:[1,3],TX:[3,3],GA:[6,3],NC:[7,3],FL:[7,4]};
+const SPECS=['Cardiology','Primary Care','Pediatrics','Orthopedics','Dermatology','Behavioral Health','OB/GYN','Neurology','Oncology','Radiology'];
+const GROUPS=['Northgate Medical','Riverbend Health','Summit Physicians','Harbor Care Partners','Pinecrest Clinics','Lakeside Associates','Cedar Valley Health','Ironwood Medical','Bluebird Care Network','Granite Specialty Group','Meadowlark Care','Oakline Physicians'];
+const FIRST=['Aisha','Rohan','Maria','James','Lena','Omar','Priya','Daniel','Chen','Sofia','Marcus','Hana','Luis','Nora','Victor','Elena','Samir','Grace','Tomas','Ivy'];
+const LAST=['Rao','Nguyen','Alvarez','Brooks','Kim','Haddad','Patel','Foster','Zhou','Ricci','Walker','Sato','Gomez','Larsen','Mehta','Cole','Dubois','Okafor','Reyes','Hale'];
+const REASONS=['Wrong phone number','Wrong address','Not accepting new patients','Not in network'];
+const OWNERS=['Analyst A','Analyst B','Analyst C'];
+const pad=(n,w)=>String(n).padStart(w,'0');
+const fmtPhone=s=>{const d=String(s).replace(/\D/g,'');return `(${d.slice(0,3)}) ${d.slice(3,6)}-${d.slice(6)}`};
+const phoneOk=s=>String(s).replace(/\D/g,'').length===10&&/^[\d\s().-]+$/.test(String(s));
+
+function generate(){
+  const r=mulberry32(SEED);
+  const ri=(a,b)=>a+Math.floor(r()*(b-a+1));
+  const pick=a=>a[Math.floor(r()*a.length)];
+  const P=[];
+  const mk=(id,type,hosp,i)=>{
+    const never=r()<0.12;
+    const age=hosp?ri(20,420):ri(5,200);
+    const lastV=never?null:fromDay(ASOF-age);
+    const base=String(ri(100000000,999999999));
+    let npi=npiMake(base);
+    if(r()<0.02){do{npi=base+ri(0,9)}while(npiValid(npi))}
+    const st=pick(STATES),sp=pick(SPECS);
+    const p={id,type,hosp,spec:hosp?'Hospital':type==='facility'?'Facility':sp,state:st,group:pick(GROUPS),npi,
+      name:hosp?`${pick(LAST)} Regional Medical Center`:type==='facility'?`${pick(LAST)} ${pick(['Clinic','Imaging Center','Surgery Center','Care Center'])}`:`Dr. ${pick(FIRST)} ${pick(LAST)}`,
+      phone:fmtPhone(String(ri(2000000000,9899999999))),addr:`${ri(10,9899)} ${pick(['Maple','Oak','Cedar','Lake','Hill','Park','River'])} ${pick(['St','Ave','Blvd','Rd'])}, ${pick(['Fairview','Clifton','Georgetown','Salem','Milton','Ashland'])} ${st}`,
+      lastV,roster:ri(5,200),mism:r()<0.14,claims:r()<0.10?0:ri(1,80),out:(()=>{const u=r();return u<0.7?0:u<0.88?1:ri(2,3)})(),
+      dep:null,fix:r()<0.06,status:'active',owner:'',hist:[]};
+    if(type==='practitioner'&&r()<0.03){p.dep=fromDay(ASOF-ri(1,40))}
+    if(lastV){let d=toDay(lastV);const ds=[d];const extra=ri(0,2);for(let k=0;k<extra;k++){d-=ri(70,130);ds.push(d)}ds.sort((a,b)=>a-b);
+      ds.forEach(x=>p.hist.push({date:fromDay(x),kind:'verification',src:r()<0.7?'attested':'inferred',text:'Seeded verification (synthetic history)'}))}
+    return p};
+  for(let i=1;i<=540;i++)P.push(mk('P-'+pad(i,4),'practitioner',false,i));
+  for(let j=1;j<=60;j++)P.push(mk('F-'+pad(j,4),'facility',j<=20,j));
+  // duplicates (practitioners, indexes >= 6)
+  for(let k=0;k<8;k++){const a=P[ri(6,269)],b=P[ri(270,539)];b.npi=a.npi;b.spec=a.spec;b.state=a.state;
+    const [fn,ln]=a.name.replace('Dr. ','').split(' ');b.name=`Dr. ${fn[0]}. ${ln}`;if(k%2===0)b.phone=a.phone}
+  const set=(id,o)=>{const p=P.find(x=>x.id===id);Object.assign(p,{dep:null,fix:false,out:0,mism:false,hist:[]},o);
+    if(o.state)p.addr=p.addr.replace(/ [A-Z]{2}$/,' '+o.state);
+    if(o.lastV)p.hist.push({date:o.lastV,kind:'verification',src:'attested',text:'Fixed test record verification'})};
+  set('P-0001',{state:'TX',lastV:'2026-09-20',roster:20,claims:24});
+  set('P-0002',{state:'CA',lastV:'2026-07-01',roster:90,claims:12});
+  set('P-0003',{state:'FL',lastV:null,roster:30,claims:5});
+  set('P-0004',{state:'NY',lastV:'2026-09-01',roster:10,claims:10,dep:'2026-11-02'});
+  set('P-0005',{state:'OH',lastV:'2026-10-10',roster:15,claims:8,dep:'2026-11-06'});
+  set('P-0006',{state:'IL',lastV:null,roster:150,claims:0,mism:true,out:1});
+  set('F-0001',{state:'PA',lastV:'2026-03-15',roster:40,claims:300});
+  const C=[];
+  for(let k=1;k<=90;k++){let p=pick(P);if(r()<0.5){const q=pick(P);if(q.mism||!q.lastV)p=q}
+    C.push({id:'C-'+pad(k,3),pid:p.id,date:fromDay(ASOF-ri(0,120)),reason:pick(REASONS),open:r()<0.6,note:''})}
+  return {P,C};
+}
+const ageOf=p=>p.lastV?ASOF-toDay(p.lastV):null;
+const cycleOf=(p,s)=>p.hosp?s.hospCycle:s.cycle;
+function score(p,s){const parts=[];let t=0;const add=(k,v)=>{t+=v;parts.push([k,v])};
+  const a=ageOf(p),c=cycleOf(p,s);
+  if(a===null)add('Never verified',s.w.never);else if(a>c)add('Past verification cycle',s.w.past);else if(a>0.75*c)add('Past 75% of cycle',s.w.p75);
+  if(p.roster>120)add('Roster older than 120 days',s.w.r120);else if(p.roster>=60)add('Roster 60 to 120 days old',s.w.r60);
+  if(p.mism)add('Address mismatch',s.w.addr);
+  if(p.claims===0)add('No claims in 12 months',s.w.claims);
+  if(p.out>=2)add('Two or more failed outreach attempts',s.w.out2);
+  return {total:Math.min(t,s.cap),raw:t,parts}}
+function confidence(p,s){const a=ageOf(p);const n=[a!==null&&a<=cycleOf(p,s),p.claims>0,p.roster<=120,!p.mism].filter(Boolean).length;return {n,label:n>=3?'High':n===2?'Medium':'Low'}}
+function isBreach(p,S){return !!p.dep&&p.status==='active'&&bizDays(p.dep,ASOF_ISO)>S.set.breachDays}
+function overdue(p,s){const a=ageOf(p);return a===null||a>cycleOf(p,s)}
+function rec(p,S){if(p.status!=='active')return 'Removed';if(p.dep)return 'Remove';if(p.fix)return 'Inaccurate';if(overdue(p,S.set)||score(p,S.set).total>=S.set.high)return 'Needs verification';return 'Accurate'}
+function band(p,S){const t=score(p,S.set).total;return t>=S.set.high?'high':t>=S.set.med?'med':'low'}
+const active=S=>S.P.filter(p=>p.status==='active');
+function metrics(S,list){list=list||active(S);const ids=new Set(list.map(p=>p.id));let ver=0,hi=0,br=0,never=0,over=0;
+  list.forEach(p=>{const a=ageOf(p),c=cycleOf(p,S.set);if(a!==null&&a<=c)ver++;if(a===null)never++;else if(a>c)over++;if(score(p,S.set).total>=S.set.high)hi++;if(isBreach(p,S))br++});
+  const comp=S.C.filter(c=>c.open&&ids.has(c.pid)).length;
+  return {n:list.length,ver,hi,br,never,over,comp,verPct:list.length?ver/list.length*100:0}}
+function recCounts(S,list){const o={'Accurate':0,'Needs verification':0,'Inaccurate':0,'Remove':0};list.forEach(p=>{o[rec(p,S)]++});return o}
+function trend(S,list){const out=[];for(let k=6;k>=0;k--){const d=ASOF-30*k;let cur=0;
+  list.forEach(p=>{let L=null;p.hist.forEach(h=>{if(h.kind==='verification'){const x=toDay(h.date);if(x<=d&&(L===null||x>L))L=x}});if(L!==null&&d-L<=cycleOf(p,S.set))cur++});
+  out.push({date:fromDay(d),pct:list.length?cur/list.length*100:0})}return out}
+function marginOf(p,n){return n?1.96*Math.sqrt(p*(1-p)/n)*100:0}
+
+function validateVerification(f,p){const e={};
+  if(!f.date)e.date='Enter the verification date.';else if(toDay(f.date)>ASOF)e.date='The date cannot be in the future (as-of date is '+ASOF_ISO+').';
+  else if(p&&p.lastV&&toDay(f.date)<toDay(p.lastV))e.date='The date is earlier than the last verification ('+p.lastV+').';
+  ['phone','addr','net'].forEach(k=>{if(!['accurate','inaccurate','inconclusive'].includes(f[k]))e[k]='Choose an outcome.'});
+  if(f.phone==='inaccurate'&&!phoneOk(f.phoneNew||''))e.phoneNew='Enter a valid 10-digit phone, for example (415) 555-0134.';
+  if(f.addr==='inaccurate'&&String(f.addrNew||'').trim().length<5)e.addrNew='Enter the corrected address (at least 5 characters).';
+  if(f.net==='inaccurate'&&!['in','out'].includes(f.netNew))e.netNew='Choose the correct network status.';
+  return e}
+function logEvt(S,type,detail){S.events.push({t:Date.now(),type,detail:detail||''})}
+function verifyRecord(S,id,f){const p=S.P.find(x=>x.id===id);const errors=validateVerification(f,p);if(Object.keys(errors).length)return {ok:false,errors};
+  const concl=[f.phone,f.addr,f.net].some(o=>o!=='inconclusive');const notes=[];
+  if(f.phone==='inaccurate'){p.phone=fmtPhone(f.phoneNew);notes.push('phone corrected')}
+  if(f.addr==='accurate'||f.addr==='inaccurate'){if(f.addr==='inaccurate'){p.addr=f.addrNew.trim();notes.push('address corrected')}p.mism=false}
+  if(f.net==='inaccurate'&&f.netNew==='out'){p.status='removed';notes.push('marked out of network and removed from directory')}
+  if(concl){p.lastV=f.date;p.out=0;p.fix=false;p.hist.push({date:f.date,kind:'verification',src:f.src,text:`Phone ${f.phone}, address ${f.addr}, network ${f.net}${notes.length?'; '+notes.join('; '):''}`});
+    S.C.forEach(c=>{if(c.pid===id&&c.open){c.open=false;c.note='Resolved by verification on '+f.date}})}
+  else{p.out+=1;p.hist.push({date:f.date,kind:'outreach',src:'-',text:'Verification attempt inconclusive on all fields'})}
+  return {ok:true,concl}}
+function removeRecord(S,id){const p=S.P.find(x=>x.id===id);p.status='removed';p.hist.push({date:ASOF_ISO,kind:'removal',src:'-',text:p.dep?`Removed after departure on ${p.dep}`:'Removed from directory'})}
+const CH={phone:{base:.55,cap:25,label:'Phone call'},portal:{base:.35,cap:120,label:'Provider portal'},fax:{base:.2,cap:40,label:'Fax / mail'}};
+function hashStr(s){let h=2166136261;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)}return h>>>0}
+function campaignTargets(S,list,minBand){const rank={low:0,med:1,high:2};return list.filter(p=>p.status==='active'&&!p.dep&&overdue(p,S.set)&&rank[band(p,S)]>=rank[minBand])}
+function campaignPlan(S,targets,channel,agents){const c=CH[channel];let exp=0;targets.forEach(p=>{exp+=c.base*(1-0.1*Math.min(p.out,3))});
+  return {n:targets.length,expected:Math.round(exp),days:targets.length?Math.ceil(targets.length/(Math.max(1,agents)*c.cap)):0}}
+function campaignLaunch(S,targets,channel){const c=CH[channel];let ok=0;S.campaigns++;
+  targets.forEach(p=>{const u=mulberry32(hashStr(p.id)+S.campaigns*7919)();const pr=c.base*(1-0.1*Math.min(p.out,3));
+    if(u<pr){p.lastV=ASOF_ISO;p.out=0;p.hist.push({date:ASOF_ISO,kind:'verification',src:'attested',text:`Verified via ${c.label.toLowerCase()} campaign #${S.campaigns}`});
+      S.C.forEach(x=>{if(x.pid===p.id&&x.open){x.open=false;x.note='Resolved by campaign verification'}});ok++}
+    else{p.out+=1;p.hist.push({date:ASOF_ISO,kind:'outreach',src:'-',text:`No response, ${c.label.toLowerCase()} campaign #${S.campaigns}`})}});
+  return {ok,n:targets.length}}
+function drawSample(S,n){const el=active(S).filter(p=>!p.dep);const by={};el.forEach(p=>{(by[p.state]=by[p.state]||[]).push(p)});
+  const N=el.length,keys=Object.keys(by).sort();const alloc={};let used=0;const rem=[];
+  keys.forEach(k=>{const x=n*by[k].length/N;alloc[k]=Math.floor(x);used+=alloc[k];rem.push([k,x-alloc[k]])});
+  rem.sort((a,b)=>b[1]-a[1]||(a[0]<b[0]?-1:1));for(let i=0;used<n;i=(i+1)%rem.length){const k=rem[i][0];if(alloc[k]<by[k].length){alloc[k]++;used++}}
+  const r=mulberry32(SEED+n);const items=[];
+  keys.forEach(k=>{const arr=by[k].slice();for(let i=arr.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]]}arr.slice(0,alloc[k]).forEach(p=>items.push({id:p.id,state:k,result:null}))});
+  S.sample={n,items,alloc};return S.sample}
+function fillSample(S,rate){const sm=S.sample;const r=mulberry32(SEED+7);const idx=sm.items.map((_,i)=>i);for(let i=idx.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[idx[i],idx[j]]=[idx[j],idx[i]]}
+  const m=Math.round(rate*sm.items.length);idx.forEach((ix,k)=>{sm.items[ix].result=k<m?'match':'mismatch'})}
+function sampleStats(S){const sm=S.sample;if(!sm)return null;const d=sm.items.filter(i=>i.result);if(!d.length)return {decided:0,n:sm.n};
+  const m=d.filter(i=>i.result==='match').length,p=m/d.length;return {decided:d.length,matches:m,p,margin:marginOf(p,d.length),n:sm.n}}
+function dupPairs(S){const act=S.P.filter(p=>p.status==='active');const map={};const add=(k,p)=>{(map[k]=map[k]||[]).push(p)};
+  act.forEach(p=>{if(p.type==='practitioner'){add('npi:'+p.npi,p);add('nm:'+p.name.split(' ').pop()+'|'+p.state+'|'+p.phone,p)}});
+  const seen=new Set(),out=[];Object.entries(map).forEach(([k,arr])=>{if(arr.length<2)return;for(let i=0;i<arr.length;i++)for(let j=i+1;j<arr.length;j++){
+    const id=[arr[i].id,arr[j].id].sort().join('~');if(seen.has(id)||S.dismissed.includes(id))continue;seen.add(id);out.push({key:id,a:arr[i],b:arr[j],why:k.startsWith('npi')?'Same NPI':'Same surname, state and phone'})}});
+  return out}
+function mergeDup(S,keepId,dropId){const a=S.P.find(p=>p.id===keepId),b=S.P.find(p=>p.id===dropId);
+  b.hist.forEach(h=>a.hist.push(Object.assign({},h,{text:h.text+` (from ${b.id})`})));a.hist.sort((x,y)=>x.date<y.date?-1:1);
+  const lv=a.hist.filter(h=>h.kind==='verification').map(h=>h.date).sort().pop();a.lastV=lv||a.lastV;
+  a.claims=Math.max(a.claims,b.claims);S.C.forEach(c=>{if(c.pid===b.id)c.pid=a.id});
+  b.status='merged';a.hist.push({date:ASOF_ISO,kind:'merge',src:'-',text:`Merged duplicate ${b.id} into this record`})}
+
+function freshState(){const g=generate();return {P:g.P,C:g.C,set:JSON.parse(JSON.stringify(DEF)),events:[],f:{state:'',spec:'',group:'',type:'',band:'',flag:''},
+  sample:null,dismissed:[],campaigns:0,taskResults:[],task:{start:null,steps:0},
+  ui:{screen:'start',role:null,sel:null,sort:{k:'score',d:-1},page:0,tab:'state',drawer:false,dialog:null,toast:null,form:null,checked:{},assignTo:OWNERS[0],camp:{band:'high',channel:'phone',agents:5},q:'',lastPlan:null,tests:null,sampleN:60,setErr:null}}}
+function listFor(S,f){f=f||S.f;return active(S).filter(p=>{
+  if(f.state&&p.state!==f.state)return false;if(f.spec&&p.spec!==f.spec)return false;if(f.group&&p.group!==f.group)return false;if(f.type&&p.type!==f.type)return false;
+  if(f.band&&band(p,S)!==f.band)return false;
+  switch(f.flag){case'breach':return isBreach(p,S);case'pending':return p.fix;case'complaints':return S.C.some(c=>c.open&&c.pid===p.id);case'never':return !p.lastV;case'overdue':return overdue(p,S.set);case'highrisk':return score(p,S.set).total>=S.set.high;case'invalidnpi':return !npiValid(p.npi)}
+  return true})}
+function parseAsk(txt){const t=txt.toLowerCase();const f={state:'',spec:'',group:'',type:'',band:'',flag:''};let hit=false;
+  if(/breach/.test(t)){f.flag='breach';hit=true}else if(/high.?risk/.test(t)){f.flag='highrisk';hit=true}else if(/never/.test(t)){f.flag='never';hit=true}
+  else if(/overdue|past cycle|expired|stale/.test(t)){f.flag='overdue';hit=true}else if(/complain/.test(t)){f.flag='complaints';hit=true}
+  else if(/pending|inaccurate/.test(t)){f.flag='pending';hit=true}else if(/npi/.test(t)){f.flag='invalidnpi';hit=true}
+  (txt.match(/\b[A-Z]{2}\b/g)||[]).forEach(c=>{if(STATES.includes(c)){f.state=c;hit=true}});
+  Object.keys(SNAME).forEach(n=>{if(t.includes(n)){f.state=SNAME[n];hit=true}});
+  SPECS.forEach(s=>{if(t.includes(s.toLowerCase())){f.spec=s;hit=true}});
+  return hit?f:null}
+
+/* ---------------- self tests (T1..T20) ---------------- */
+function runTests(){
+  const R=[];const T=(id,name,fn)=>{let ok=false,msg='';try{const v=fn();ok=v===true;msg=ok?'':String(v)}catch(e){msg=e.message}R.push({id,name,ok,msg})};
+  const S0=freshState(),get=(S,id)=>S.P.find(p=>p.id===id);
+  const goodForm={date:ASOF_ISO,src:'attested',phone:'accurate',addr:'accurate',net:'accurate'};
+  T('T1','P-0001: verified 52 days ago, current',()=>{const p=get(S0,'P-0001');return ageOf(p)===52&&!overdue(p,S0.set)&&rec(p,S0)==='Accurate'});
+  T('T2','P-0002: 133 days, past 90-day cycle',()=>{const p=get(S0,'P-0002');return ageOf(p)===133&&overdue(p,S0.set)&&score(p,S0.set).total===37});
+  T('T3','P-0003: never verified, score 40, needs verification',()=>{const p=get(S0,'P-0003');return p.lastV===null&&score(p,S0.set).total===40&&rec(p,S0)==='Needs verification'});
+  T('T4','P-0004: 7 business days after departure is a breach',()=>{const p=get(S0,'P-0004');return bizDays(p.dep,ASOF_ISO)===7&&isBreach(p,S0)});
+  T('T5','P-0005: 3 business days, no breach',()=>{const p=get(S0,'P-0005');return bizDays(p.dep,ASOF_ISO)===3&&!isBreach(p,S0)&&rec(p,S0)==='Remove'});
+  T('T6','P-0006: score 90 and high risk',()=>{const p=get(S0,'P-0006');return score(p,S0.set).total===90&&band(p,S0)==='high'});
+  T('T7','F-0001: hospital 241 days, current on 365-day cycle',()=>{const p=get(S0,'F-0001');return ageOf(p)===241&&!overdue(p,S0.set)});
+  T('T8','Score is capped at the cap, and default weights peak at exactly 100',()=>{const p={lastV:null,roster:200,mism:true,claims:0,out:3,hosp:false};
+    const s=score(p,S0.set);if(!(s.raw===100&&s.total===100))return 'default peak '+s.raw;
+    const raised=JSON.parse(JSON.stringify(S0.set));raised.w.never=80;const s2=score(p,raised);return s2.raw===140&&s2.total===100});
+  T('T9','Confidence: 4 or 3 inputs High, 2 Medium, 0 or 1 Low',()=>{const mk=(a,c,r,m)=>confidence({lastV:a,claims:c,roster:r,mism:m,hosp:false},S0.set).label;
+    return mk(fromDay(ASOF-10),5,10,false)==='High'&&mk(fromDay(ASOF-10),5,10,true)==='High'&&mk(null,5,10,true)==='Medium'&&mk(null,0,200,true)==='Low'&&mk(null,0,200,false)==='Low'});
+  T('T10','Sample margin: 45 of 60 gives 75% and 11.0 points',()=>{return Math.abs(marginOf(45/60,60)-10.96)<0.05&&marginOf(.75,60).toFixed(1)==='11.0'});
+  T('T11','Dataset: 600 providers (540/60/20 hospitals), 12 groups, 90 complaints',()=>S0.P.length===600&&S0.P.filter(p=>p.type==='practitioner').length===540&&S0.P.filter(p=>p.hosp).length===20&&new Set(S0.P.map(p=>p.group)).size===12&&S0.C.length===90);
+  T('T12','Generator is deterministic for the seed',()=>{const a=generate(),b=generate();return JSON.stringify(a)===JSON.stringify(b)});
+  T('T13','NPI check: 1234567893 is valid',()=>npiValid('1234567893'));
+  T('T14','NPI check: 1234567890 is invalid',()=>!npiValid('1234567890')&&!npiValid('12345'));
+  T('T15','Business days: Friday to Monday is 1',()=>bizDays('2026-11-06','2026-11-09')===1);
+  T('T16','Validation rejects a future verification date',()=>!!validateVerification(Object.assign({},goodForm,{date:'2026-11-12'}),null).date);
+  T('T17','Validation rejects a malformed phone correction',()=>!!validateVerification(Object.assign({},goodForm,{phone:'inaccurate',phoneNew:'12-34'}),null).phoneNew);
+  T('T18','Saving a verification raises verified-in-cycle count',()=>{const S=structuredClone(S0);const before=metrics(S).ver;const r=verifyRecord(S,'P-0003',goodForm);return r.ok&&metrics(S).ver===before+1&&get(S,'P-0003').lastV===ASOF_ISO});
+  T('T19','Removing a departed record clears one breach',()=>{const S=structuredClone(S0);const b=metrics(S).br;removeRecord(S,'P-0004');return metrics(S).br===b-1});
+  T('T20','Stratified sample: size n, no duplicates, margin from decided count',()=>{const S=structuredClone(S0);const sm=drawSample(S,60);fillSample(S,.75);const st=sampleStats(S);
+    return sm.items.length===60&&new Set(sm.items.map(i=>i.id)).size===60&&st.matches===45&&st.margin.toFixed(1)==='11.0'});
+  T('T21','Trend: last point equals current verified %',()=>{const L=active(S0);return Math.abs(trend(S0,L)[6].pct-metrics(S0,L).verPct)<1e-9});
+  T('T22','Merge duplicate moves history and marks one record merged',()=>{const S=structuredClone(S0);const d=dupPairs(S);if(!d.length)return 'no duplicates';const x=d[0];const before=x.a.hist.length+x.b.hist.length;mergeDup(S,x.a.id,x.b.id);return get(S,x.b.id).status==='merged'&&get(S,x.a.id).hist.length>=before});
+  return R}
+
+/* =====================================================================
+   SERVICES (SIMULATED): outreach outcomes, call results, NL parsing are
+   simulated above in campaignLaunch / fillSample / parseAsk and labelled.
+   UI LAYER
+   ===================================================================== */
+let S=freshState();
+const $=id=>document.getElementById(id);
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const pc=n=>(Math.round(n*10)/10).toFixed(1)+'%';
+const ICON={dash:'<rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>',seg:'<path d="M3 12a9 9 0 1 0 9-9v9z"/>',queue:'<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>',out:'<path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/>',dq:'<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/>',dup:'<rect x="8" y="8" width="12" height="12" rx="2"/><path d="M4 16V6a2 2 0 0 1 2-2h10"/>',ins:'<path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/>',set:'<circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 0 0-.1-1.2l2-1.5-2-3.4-2.3 1a7 7 0 0 0-2-1.2L14 3h-4l-.6 2.7a7 7 0 0 0-2 1.2l-2.3-1-2 3.4 2 1.5A7 7 0 0 0 5 12c0 .4 0 .8.1 1.2l-2 1.5 2 3.4 2.3-1a7 7 0 0 0 2 1.2L10 21h4l.6-2.7a7 7 0 0 0 2-1.2l2.3 1 2-3.4-2-1.5c.1-.4.1-.8.1-1.2z"/>'};
+const NAV=[['dash','Dashboard','dash'],['seg','Segments','seg'],['queue','Queue','queue'],['out','Outreach','out'],['dq','Quality','dq'],['dup','Duplicates','dup'],['ins','Insights','ins'],['set','Settings','set']];
+
+function log(type,detail,step){logEvt(S,type,detail);if(step){if(!S.task.start)S.task.start=Date.now();S.task.steps++}}
+function toast(msg,bad){S.ui.toast={msg,bad};$('live').textContent=msg;clearTimeout(toast.t);toast.t=setTimeout(()=>{S.ui.toast=null;render()},4500)}
+function go(screen){S.ui.screen=screen;S.ui.page=0;log('nav',screen,true);render();window.scrollTo(0,0)}
+
+function filteredRows(){return listFor(S).map(p=>{const sc=score(p,S.set);return {p,sc:sc.total,age:ageOf(p),rec:rec(p,S),conf:confidence(p,S.set).label,breach:isBreach(p,S)}})}
+function recPill(r){const m={'Accurate':'p-ok','Needs verification':'p-nv','Inaccurate':'p-in','Remove':'p-rm','Removed':'p-gr'};return `<span class="pill ${m[r]||'p-gr'}">${esc(r)}</span>`}
+function chips(){const f=S.f,out=[];const L={state:'State',spec:'Specialty',group:'Group',type:'Type',band:'Risk',flag:'Flag'};
+  Object.keys(L).forEach(k=>{if(f[k])out.push(`<span class="chip">${L[k]}: ${esc(f[k])}<button data-a="unf" data-k="${k}" aria-label="Remove ${L[k]} filter">&times;</button></span>`)});
+  return out.join(' ')+(out.length?` <button class="btn sm" data-a="clearf">Clear filters</button>`:'')}
+function header(title){return `<div class="top"><h1>${esc(title)}</h1>${chips()}<span class="sp"></span>
+  <form class="ask" data-f="ask" role="search"><label class="sr" for="askq">Ask the data</label><input id="askq" type="text" placeholder="Ask the data: high risk in TX" value="${esc(S.ui.q)}"><button class="btn sm solid" type="submit">Ask</button></form>
+  <button class="btn sm" data-a="drawer">About</button></div>`}
+
+function vStart(){const roles=[['compliance','Compliance lead','Show me what could cause a regulatory finding. Opens on removal-window breaches.'],['network','Network operations','Show me the records to fix. Opens on records with pending corrections.'],['member','Member services','Show me what members are complaining about. Opens on records with open complaints.']];
+  return `<div class="hero"><span class="badge-sim">Meridian Health Plan &middot; Provider network integrity</span>
+  <h1>Know which provider listings are verified, when, and how.</h1>
+  <p>Meridian's directory has an assumed error rate that nobody can evidence. This console scores every listing, ranks the work, records each verification field by field, and recomputes everything the moment you act. Pick who you are to begin.</p>
+  <div class="roles">${roles.map(r=>`<button class="role" data-a="role" data-v="${r[0]}"><b>${r[1]}</b><span class="muted">${r[2]}</span></button>`).join('')}</div>
+  <p style="margin-top:26px;font-size:12px;color:#8fa5d8">600 provider records &middot; as-of date ${ASOF_ISO} &middot; data resets on refresh</p></div>`}
+
+function donut(counts){const cols={'Accurate':'#73b124','Needs verification':'#2a6af1','Inaccurate':'#ec700a','Remove':'#e25f5a'};const tot=Object.values(counts).reduce((a,b)=>a+b,0)||1;const C=2*Math.PI*38;let off=0;
+  const arcs=Object.keys(counts).map(k=>{const len=counts[k]/tot*C;const s=`<circle cx="50" cy="50" r="38" fill="none" stroke="${cols[k]}" stroke-width="16" stroke-dasharray="${len} ${C-len}" stroke-dashoffset="${-off}" transform="rotate(-90 50 50)"/>`;off+=len;return s}).join('');
+  return `<div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap"><svg width="130" height="130" viewBox="0 0 100 100" role="img" aria-label="Records by recommendation">${arcs}<text x="50" y="54" text-anchor="middle" font-size="14" font-weight="900" fill="#072669">${tot}</text></svg>
+  <div class="legend" style="display:grid;gap:4px">${Object.keys(counts).map(k=>`<span><i style="background:${cols[k]}"></i>${k}: <b>${counts[k]}</b> (${pc(counts[k]/tot*100)})</span>`).join('')}</div></div>`}
+function trendSvg(t){const w=360,h=120,bw=34;const bars=t.map((x,i)=>{const bh=x.pct/100*88;const px=14+i*50;return `<rect x="${px}" y="${100-bh}" width="${bw}" height="${bh}" rx="4" fill="#a9c2f9"/><text x="${px+bw/2}" y="${96-bh}" text-anchor="middle" font-size="9" font-weight="700" fill="#072669">${Math.round(x.pct)}%</text><text x="${px+bw/2}" y="114" text-anchor="middle" font-size="9" fill="#5a6884">${x.date.slice(5)}</text>`}).join('');
+  const pts=t.map((x,i)=>`${14+i*50+bw/2},${100-x.pct/100*88}`).join(' ');
+  return `<svg viewBox="0 0 ${w} ${h}" width="100%" role="img" aria-label="Verified in cycle percentage over the last six months, now ${Math.round(t[6].pct)} percent">${bars}<polyline points="${pts}" fill="none" stroke="#072669" stroke-width="2"/></svg>`}
+function tileMap(){const all=active(S);const stat=STATES.map(s=>{const l=all.filter(p=>p.state===s);const hi=l.filter(p=>score(p,S.set).total>=S.set.high).length;return {s,n:l.length,hi,sh:l.length?hi/l.length:0}});
+  const mx=Math.max(...stat.map(x=>x.sh))||1;const cols=['#e8effe','#a9c2f9','#5386f4','#2a6af1','#072669'];
+  let cells=[];for(let r=0;r<5;r++)for(let c=0;c<8;c++){const st=stat.find(x=>TILE[x.s][0]===c&&TILE[x.s][1]===r);
+    if(!st){cells.push('<span></span>');continue}const lv=Math.min(4,Math.floor(st.sh/mx*4.999));const dark=lv>=2;
+    cells.push(`<button class="tile" data-a="filt" data-k="state" data-v="${st.s}" style="background:${cols[lv]};color:${dark?'#fff':'#072669'};${S.f.state===st.s?'outline:3px solid #0ff':''}" title="${st.s}: ${st.hi} of ${st.n} high risk"><span>${st.s}</span><span style="font-weight:600">${pc(st.sh*100)}</span></button>`)}
+  return `<div class="tilegrid">${cells.join('')}</div><div class="legend" style="margin-top:8px"><span>Share of records at high risk. Darker is higher. Tile map, not to scale.</span></div>`}
+function marketTable(){const all=active(S);const key={state:'state',spec:'spec',group:'group'}[S.ui.tab];const names=[...new Set(all.map(p=>p[key]))];
+  const rows=names.map(n=>{const l=all.filter(p=>p[key]===n);const m=metrics(S,l);return {n,m}}).sort((a,b)=>b.m.hi-a.m.hi).slice(0,10);
+  return `<div class="tabs" role="tablist">${[['state','State'],['spec','Specialty'],['group','Group']].map(t=>`<button class="tab ${S.ui.tab===t[0]?'on':''}" data-a="tab" data-v="${t[0]}">${t[1]}</button>`).join('')}</div>
+  <div class="scroll"><table><thead><tr><th>${S.ui.tab==='state'?'State':S.ui.tab==='spec'?'Specialty':'Group'}</th><th>Records</th><th>Verified in cycle</th><th>High risk</th><th>Breaches</th></tr></thead><tbody>${rows.map(r=>`<tr class="click" data-a="filt" data-k="${key}" data-v="${esc(r.n)}" data-go="dash"><td>${esc(r.n)}</td><td>${r.m.n}</td><td>${pc(r.m.verPct)}</td><td>${r.m.hi}</td><td>${r.m.br}</td></tr>`).join('')}</tbody></table></div>`}
+function vDash(){const L=listFor(S);const m=metrics(S,L);const st=sampleStats(S);const rc=recCounts(S,L);const tr=trend(S,L);
+  const K=(l,v,s,a)=>`<button class="kpi" data-a="flag" data-v="${a}"><div class="l">${l}</div><div class="v">${v}</div><div class="s">${s}</div></button>`;
+  return header('Executive dashboard')+`<div class="page"><div class="grid kpis">
+  ${K('Verified in cycle',pc(m.verPct),`${m.ver} of ${m.n} records`,'overdue')}
+  <button class="kpi" data-a="nav" data-v="dq"><div class="l">Sampled accuracy</div><div class="v${st&&st.decided?'':' txt'}">${st&&st.decided?pc(st.p*100):'Not sampled yet'}</div><div class="s">${st&&st.decided?`&plusmn;${st.margin.toFixed(1)} points, n=${st.decided}`:'Draw a sample in Quality'}</div></button>
+  ${K('Removal-window breaches',m.br,`Departed more than ${S.set.breachDays} business days ago`,'breach')}
+  ${K('High-risk records',m.hi,`Score ${S.set.high} or above`,'highrisk')}
+  ${K('Open complaints linked',m.comp,'Open complaints on these listings','complaints')}</div>
+  <div class="grid two" style="margin-bottom:14px"><div class="card"><h2>Records by recommendation</h2>${donut(rc)}</div><div class="card"><h2>Verified in cycle, last six months</h2>${trendSvg(tr)}<div class="muted" style="font-size:11px">Computed from each record's verification history on the 90-day (365 for hospitals) cycle.</div></div></div>
+  <div class="grid two" style="align-items:start"><div class="card"><h2>Risk by state</h2>${tileMap()}</div><div class="card"><h2>Markets</h2>${marketTable()}</div></div></div>`}
+
+function vSeg(){const all=active(S);const blocks=[['spec','Specialty'],['group','Group'],['state','State']].map(([k,l])=>{const names=[...new Set(all.map(p=>p[k]))];
+  const rows=names.map(n=>{const m=metrics(S,all.filter(p=>p[k]===n));return {n,m}}).sort((a,b)=>b.m.hi-a.m.hi);
+  return `<div class="card"><h2>By ${l.toLowerCase()}</h2><div class="scroll"><table><thead><tr><th>${l}</th><th>Records</th><th>Verified</th><th>High risk</th></tr></thead><tbody>${rows.map(r=>`<tr class="click" data-a="filt" data-k="${k}" data-v="${esc(r.n)}" data-go="queue"><td>${esc(r.n)}</td><td>${r.m.n}</td><td><div class="bar" style="width:90px;display:inline-block;vertical-align:middle"><i style="width:${r.m.verPct}%"></i></div> ${pc(r.m.verPct)}</td><td>${r.m.hi}</td></tr>`).join('')}</tbody></table></div></div>`}).join('');
+  const f=S.f;const sel=(k,l,opts)=>`<div class="fld" style="min-width:150px"><label for="f-${k}">${l}</label><select id="f-${k}" data-c="filt" data-k="${k}"><option value="">All</option>${opts.map(o=>`<option value="${esc(o[0])}" ${f[k]===o[0]?'selected':''}>${esc(o[1])}</option>`).join('')}</select></div>`;
+  return header('Segments')+`<div class="page"><div class="card" style="margin-bottom:14px"><h2>Filter the whole console</h2><div class="row">${sel('state','State',STATES.map(s=>[s,s]))}${sel('spec','Specialty',SPECS.map(s=>[s,s]))}${sel('group','Group',GROUPS.map(s=>[s,s]))}${sel('type','Type',[['practitioner','Practitioner'],['facility','Facility']])}${sel('band','Risk band',[['high','High'],['med','Medium'],['low','Low']])}</div><p class="muted">${listFor(S).length} records match. Click any row below to filter to it and open the queue.</p></div><div class="grid three">${blocks}</div></div>`}
+
+function vQueue(){let rows=filteredRows();const q=(S.ui.search||'').toLowerCase();if(q)rows=rows.filter(r=>(r.p.id+r.p.name+r.p.npi+r.p.spec).toLowerCase().includes(q));
+  const {k,d}=S.ui.sort;const val={id:r=>r.p.id,name:r=>r.p.name,spec:r=>r.p.spec,state:r=>r.p.state,score:r=>r.sc,age:r=>r.age===null?9999:r.age,rec:r=>r.rec};
+  rows.sort((a,b)=>{const x=val[k](a),y=val[k](b);return (x<y?-1:x>y?1:0)*d||(a.p.id<b.p.id?-1:1)});
+  const per=25,pages=Math.max(1,Math.ceil(rows.length/per));S.ui.page=Math.min(S.ui.page,pages-1);const vis=rows.slice(S.ui.page*per,S.ui.page*per+per);
+  const th=(key,l)=>`<th aria-sort="${S.ui.sort.k===key?(S.ui.sort.d>0?'ascending':'descending'):'none'}"><button data-a="sort" data-v="${key}">${l}${S.ui.sort.k===key?(S.ui.sort.d>0?' &#9650;':' &#9660;'):''}</button></th>`;
+  const nch=Object.keys(S.ui.checked).filter(i=>S.ui.checked[i]).length;
+  return header('Action queue')+`<div class="page"><div class="card"><div class="row" style="margin-bottom:10px"><form data-f="search" class="fld" style="min-width:220px;margin:0"><label for="sq">Search id, name, NPI or specialty</label><input id="sq" type="text" value="${esc(S.ui.search||'')}"></form>
+  <div class="fld" style="margin:0"><label for="asg">Assign selected (${nch})</label><select id="asg" data-c="assignTo">${OWNERS.map(o=>`<option ${S.ui.assignTo===o?'selected':''}>${o}</option>`).join('')}</select></div>
+  <button class="btn sm solid" data-a="assign" ${nch?'':'disabled'}>Assign</button><button class="btn sm" data-a="csv">Export CSV</button><span class="muted">${rows.length} records, ranked by ${k}</span></div>
+  <div class="scroll"><table><thead><tr><th><span class="sr">Select</span></th>${th('id','ID')}${th('name','Name')}${th('spec','Specialty')}${th('state','State')}${th('score','Risk score')}<th>Confidence</th>${th('age','Days since verified')}${th('rec','Recommendation')}<th>Flags</th><th>Owner</th></tr></thead><tbody>
+  ${vis.map(r=>`<tr><td><input type="checkbox" data-c="chk" data-k="${r.p.id}" ${S.ui.checked[r.p.id]?'checked':''} aria-label="Select ${r.p.id}"></td><td><button class="btn sm" data-a="open" data-v="${r.p.id}">${r.p.id}</button></td><td>${esc(r.p.name)}</td><td>${esc(r.p.spec)}</td><td>${r.p.state}</td><td><b>${r.sc}</b></td><td>${r.conf}</td><td>${r.age===null?'Never':r.age}</td><td>${recPill(r.rec)}</td><td>${r.breach?'<span class="pill p-rm">Breach</span> ':''}${!npiValid(r.p.npi)?'<span class="pill p-in">Invalid NPI</span> ':''}${S.C.some(c=>c.open&&c.pid===r.p.id)?'<span class="pill p-nv">Complaint</span>':''}</td><td>${esc(r.p.owner||'-')}</td></tr>`).join('')||'<tr><td colspan="11" class="muted">No records match these filters. Clear filters to see all.</td></tr>'}</tbody></table></div>
+  <div class="row" style="margin-top:10px"><button class="btn sm" data-a="page" data-v="-1" ${S.ui.page===0?'disabled':''}>Previous</button><span>Page ${S.ui.page+1} of ${pages}</span><button class="btn sm" data-a="page" data-v="1" ${S.ui.page>=pages-1?'disabled':''}>Next</button></div></div></div>`}
+
+function vRecord(){const p=S.P.find(x=>x.id===S.ui.sel);if(!p)return header('Record')+`<div class="page"><div class="card">No record selected. <button class="btn sm" data-a="nav" data-v="queue">Back to queue</button></div></div>`;
+  const sc=score(p,S.set),cf=confidence(p,S.set),a=ageOf(p),R=rec(p,S),act=p.status==='active';
+  if(!S.ui.form||S.ui.form.id!==p.id)S.ui.form={id:p.id,date:ASOF_ISO,src:'attested',phone:'',addr:'',net:'',phoneNew:'',addrNew:'',netNew:'',errors:{}};const F=S.ui.form;
+  const fe=k=>F.errors[k]?`<div class="err" role="alert">${esc(F.errors[k])}</div>`:'';
+  const outSel=(k,l)=>`<div class="fld"><label for="o-${k}">${l} (directory shows: ${esc(k==='phone'?p.phone:k==='addr'?p.addr:'In network')})</label><select id="o-${k}" data-c="fo" data-k="${k}"><option value="">Choose outcome</option>${['accurate','inaccurate','inconclusive'].map(o=>`<option value="${o}" ${F[k]===o?'selected':''}>${o[0].toUpperCase()+o.slice(1)}</option>`).join('')}</select>${fe(k)}
+    ${F[k]==='inaccurate'&&k==='phone'?`<div class="fld"><label for="pn">Corrected phone</label><input id="pn" type="text" data-c="fi" data-k="phoneNew" value="${esc(F.phoneNew)}">${fe('phoneNew')}</div>`:''}
+    ${F[k]==='inaccurate'&&k==='addr'?`<div class="fld"><label for="an">Corrected address</label><input id="an" type="text" data-c="fi" data-k="addrNew" value="${esc(F.addrNew)}">${fe('addrNew')}</div>`:''}
+    ${F[k]==='inaccurate'&&k==='net'?`<div class="fld"><label for="nn">Correct network status</label><select id="nn" data-c="fo" data-k="netNew"><option value="">Choose</option><option value="in" ${F.netNew==='in'?'selected':''}>In network</option><option value="out" ${F.netNew==='out'?'selected':''}>Out of network (removes from directory)</option></select>${fe('netNew')}</div>`:''}</div>`;
+  const comps=S.C.filter(c=>c.pid===p.id);const lastV=[...p.hist].reverse().find(h=>h.kind==='verification');
+  return header(p.id+' '+p.name)+`<div class="page"><p><button class="btn sm" data-a="nav" data-v="queue">&larr; Back to queue</button> ${recPill(R)} <span class="pill p-gr">Confidence ${cf.label} (${cf.n} of 4 signals)</span> <span class="pill p-gr">Risk score ${sc.total}</span></p>
+  ${p.dep?`<div class="${isBreach(p,S)?'bad':'warn'}">Departure recorded ${p.dep}: ${bizDays(p.dep,ASOF_ISO)} business days ago. Removal limit is ${S.set.breachDays}. ${isBreach(p,S)?'This is a breach. Remove the listing now.':'Within the window; remove soon.'}</div>`:''}
+  ${!act?`<div class="okb">This record is ${p.status}; it is no longer in the active directory.</div>`:''}
+  ${!npiValid(p.npi)?'<div class="warn">The NPI on file fails the NPI check-digit test. Confirm it with the provider.</div>':''}
+  <div class="grid two"><div class="grid"><div class="card"><h2>Why this score</h2>${sc.parts.length?sc.parts.map(x=>`<div style="display:flex;justify-content:space-between"><span>${esc(x[0])}</span><b>+${x[1]}</b></div><div class="bar"><i style="width:${x[1]/S.set.cap*100}%"></i></div>`).join(''):'<span class="muted">No risk factors fire.</span>'}<div style="margin-top:8px"><b>Total ${sc.total}</b>${sc.raw>sc.total?` (raw ${sc.raw}, capped at ${S.set.cap})`:''}</div></div>
+  <div class="card"><h2>Facts on file</h2><table><tbody>${[['NPI',p.npi+(npiValid(p.npi)?' (valid)':' (invalid)')],['Specialty',p.spec],['Group',p.group],['State',p.state],['Phone',p.phone],['Address',p.addr],['Roster feed age',p.roster+' days'],['Claims, 12 months',p.claims],['Failed outreach',p.out],['Last verified',p.lastV?`${p.lastV} (${a} days ago; cycle ${cycleOf(p,S.set)})`:'Never'],['Last evidence',lastV?`<span class="pill ${lastV.src==='attested'?'p-ok':'p-nv'}">${lastV.src}</span>`:'-']].map(r=>`<tr><th scope="row">${r[0]}</th><td style="white-space:normal">${typeof r[1]==='string'&&r[1].startsWith('<')?r[1]:esc(r[1])}</td></tr>`).join('')}</tbody></table></div></div>
+  <div class="grid"><div class="card"><h2>Verify this listing</h2>${act?`<form data-f="verify" novalidate><div class="row"><div class="fld"><label for="vd">Verification date</label><input id="vd" type="date" max="${ASOF_ISO}" data-c="fi" data-k="date" value="${F.date}">${fe('date')}</div><div class="fld"><label for="vs">Evidence</label><select id="vs" data-c="fo" data-k="src"><option value="attested" ${F.src==='attested'?'selected':''}>Attested by provider</option><option value="inferred" ${F.src==='inferred'?'selected':''}>Inferred from data</option></select></div></div>${outSel('phone','Phone')}${outSel('addr','Address')}${outSel('net','Network status')}
+  <div class="row"><button class="btn primary" type="submit">Save verification</button>${p.dep||true?`<button class="btn danger" type="button" data-a="rmask" data-v="${p.id}">Remove from directory</button>`:''}</div></form>`:'<p class="muted">Verification is available for active records only.</p>'}</div>
+  <div class="card"><h2>Linked complaints</h2>${comps.length?comps.map(c=>`<div>${c.date} ${esc(c.reason)} <span class="pill ${c.open?'p-in':'p-ok'}">${c.open?'Open':'Resolved'}</span> <span class="muted">${esc(c.note)}</span></div>`).join(''):'<span class="muted">None</span>'}</div>
+  <div class="card"><h2>History</h2><div class="tl">${[...p.hist].reverse().map(h=>`<div><b>${h.date}</b> <span class="pill p-gr">${h.kind}${h.src&&h.src!=='-'?', '+h.src:''}</span><br>${esc(h.text)}</div>`).join('')||'<span class="muted">No history</span>'}</div></div></div></div></div>`}
+
+function vOutreach(){const L=listFor(S);const c=S.ui.camp;const tg=campaignTargets(S,L,c.band);const pl=campaignPlan(S,tg,c.channel,c.agents);S.ui.lastPlan=pl;
+  return header('Outreach planner')+`<div class="page">
+  <div class="grid two" style="align-items:start"><div class="card"><h2>Plan a campaign</h2><p class="muted">Targets: active, not-departed records on the current filters that are never verified or past cycle.</p>
+  <div class="fld"><label for="cb">Minimum risk band</label><select id="cb" data-c="camp" data-k="band">${[['low','Low and above'],['med','Medium and above'],['high','High only']].map(o=>`<option value="${o[0]}" ${c.band===o[0]?'selected':''}>${o[1]}</option>`).join('')}</select></div>
+  <div class="fld"><label for="cc">Channel</label><select id="cc" data-c="camp" data-k="channel">${Object.keys(CH).map(k=>`<option value="${k}" ${c.channel===k?'selected':''}>${CH[k].label}</option>`).join('')}</select></div>
+  <div class="fld"><label for="ca">Agents (1 to 50)</label><input id="ca" type="number" min="1" max="50" data-c="camp" data-k="agents" value="${c.agents}"></div></div>
+  <div class="card"><h2>Predicted result</h2><div class="grid kpis" style="grid-template-columns:repeat(3,1fr)"><div class="kpi" style="cursor:default"><div class="l">Targeted records</div><div class="v">${pl.n}</div></div><div class="kpi" style="cursor:default"><div class="l">Expected verified</div><div class="v">${pl.expected}</div></div><div class="kpi" style="cursor:default"><div class="l">Working days</div><div class="v">${pl.days}</div></div></div>
+  <p class="muted">Formula: channel base rate (${Math.round(CH[c.channel].base*100)}%) reduced 10% per failed prior attempt (max 3), summed over targets. Days = targets / (agents &times; ${CH[c.channel].cap} per agent per day).</p>
+  <button class="btn primary" data-a="launch" ${pl.n?'':'disabled'}>Run campaign</button> <span class="muted">Campaigns run so far: ${S.campaigns}. Outcomes are generated in-app, not dialled.</span></div></div></div>`}
+
+function vDQ(){const n=S.ui.sampleN;const st=sampleStats(S);const sm=S.sample;const m=metrics(S);const stale=S.C.filter(c=>c.open&&ASOF-toDay(c.date)>30).length;
+  const checks=[['No removal-window breaches',m.br===0,`${m.br} breaches`],['At least 90% verified in cycle',m.verPct>=90,pc(m.verPct)],['Sampled accuracy at least 85%',!!(st&&st.decided&&st.p>=.85),st&&st.decided?pc(st.p*100):'No sample yet'],['High-risk records at most 5% of active',m.hi/m.n<=.05,pc(m.hi/m.n*100)],['Open complaints older than 30 days: none',stale===0,`${stale} open`],['Every verified record has an audit-trail entry',active(S).every(p=>!p.lastV||p.hist.some(h=>h.kind==='verification'&&h.date===p.lastV)),'Checked per record']];
+  return header('Data quality and sampling')+`<div class="page"><div class="grid two"><div class="card"><h2>Stratified sample (by state)</h2>
+  <form data-f="draw" class="row"><div class="fld"><label for="sn">Sample size (20 to 200)</label><input id="sn" type="number" min="20" max="200" data-c="sampleN" value="${n}"></div><button class="btn solid" type="submit">Draw sample</button>${sm?`<button class="btn" type="button" data-a="fill">Fill results at 75%</button>`:''}</form>
+  ${S.ui.dqErr?`<div class="err" role="alert">${esc(S.ui.dqErr)}</div>`:''}
+  ${st&&st.decided?`<div class="okb">Accuracy ${pc(st.p*100)} &plusmn; ${st.margin.toFixed(1)} points (95%), from ${st.matches} matches of ${st.decided} calls. Margin = 1.96 &times; sqrt(p(1-p)/n).</div>`:sm?'<p class="muted">Mark each call result below, or fill them in bulk.</p>':'<p class="muted">Draw a sample to measure accuracy by calling providers. Allocation is proportional by state; the draw is seeded so it is repeatable.</p>'}
+  ${sm?`<div class="scroll" style="max-height:340px;overflow:auto"><table><thead><tr><th>ID</th><th>State</th><th>Directory matched the call?</th></tr></thead><tbody>${sm.items.map((i,ix)=>`<tr><td>${i.id}</td><td>${i.state}</td><td><select aria-label="Result for ${i.id}" data-c="sres" data-k="${ix}"><option value="">Not called</option><option value="match" ${i.result==='match'?'selected':''}>Match</option><option value="mismatch" ${i.result==='mismatch'?'selected':''}>Mismatch</option></select></td></tr>`).join('')}</tbody></table></div>`:''}</div>
+  <div class="card"><h2>Audit-readiness check</h2><p class="muted">Internal targets, configurable in Settings. Not regulatory thresholds and not a compliance determination.</p>
+  ${checks.map(c=>`<div style="display:flex;gap:8px;align-items:center;margin-bottom:6px"><span class="pill ${c[1]?'p-ok':'p-rm'}">${c[1]?'Pass':'Fail'}</span><span>${c[0]}</span><span class="muted">(${c[2]})</span></div>`).join('')}
+  <p><b>${checks.filter(c=>c[1]).length} of ${checks.length} checks pass.</b></p></div></div></div>`}
+
+function vDup(){const d=dupPairs(S);const cell=p=>`<td style="white-space:normal">${p.id}<br><b>${esc(p.name)}</b><br>${esc(p.spec)}, ${p.state}<br>NPI ${p.npi}<br>${esc(p.phone)}<br>Verified ${p.lastV||'never'}</td>`;
+  return header('Duplicate records')+`<div class="page"><div class="card"><h2>${d.length} candidate duplicate pairs</h2><p class="muted">Matched on identical NPI or on surname, state and phone. Merging keeps one record, moves the history across, and re-points complaints.</p>
+  ${d.map(x=>`<div class="card" style="margin-bottom:10px;background:var(--bg)"><span class="pill p-nv">${x.why}</span><div class="scroll"><table><tbody><tr>${cell(x.a)}${cell(x.b)}</tr></tbody></table></div>
+  <div class="row"><button class="btn sm solid" data-a="mergeask" data-v="${x.a.id}|${x.b.id}">Keep ${x.a.id}, merge ${x.b.id}</button><button class="btn sm" data-a="mergeask" data-v="${x.b.id}|${x.a.id}">Keep ${x.b.id}, merge ${x.a.id}</button><button class="btn sm" data-a="dismiss" data-v="${x.key}">Not a duplicate</button></div></div>`).join('')||'<p>No candidates left.</p>'}</div></div>`}
+
+function vIns(){const tr=S.taskResults;const med=a=>{if(!a.length)return null;const s=[...a].sort((x,y)=>x-y);const m=Math.floor(s.length/2);return s.length%2?s[m]:(s[m-1]+s[m])/2};
+  const ms=med(tr.map(t=>t.steps)),mt=med(tr.map(t=>t.secs));const BASE=7;
+  return header('Insights')+`<div class="page"><div class="grid kpis"><div class="kpi" style="cursor:default"><div class="l">Verifications completed</div><div class="v">${tr.length}</div></div><div class="kpi" style="cursor:default"><div class="l">Median steps per verification</div><div class="v">${ms===null?'-':ms}</div><div class="s">Counted from your clicks since the last save</div></div><div class="kpi" style="cursor:default"><div class="l">Median time per verification</div><div class="v">${mt===null?'-':mt.toFixed(0)+' s'}</div></div><div class="kpi" style="cursor:default"><div class="l">Assumed manual baseline</div><div class="v">${BASE} steps</div><div class="s">Assumption, not measured</div></div></div>
+  <div class="card" style="margin-bottom:14px"><h2>Before and after</h2>${ms===null?'<p class="muted">Verify a record from the queue to see your own step count and time here.</p>':`<p>Your median is <b>${ms}</b> steps against an assumed manual baseline of <b>${BASE}</b>: ${ms<BASE?`${BASE-ms} fewer`:ms===BASE?'the same number of':`${ms-BASE} more`} steps. The baseline is an assumption to be replaced with a timed study; the in-app figure is measured from this session.</p>`}
+  ${tr.length?`<div class="scroll"><table><thead><tr><th>#</th><th>Record</th><th>Steps</th><th>Seconds</th></tr></thead><tbody>${tr.map((t,i)=>`<tr><td>${i+1}</td><td>${t.id}</td><td>${t.steps}</td><td>${t.secs.toFixed(0)}</td></tr>`).join('')}</tbody></table></div>`:''}</div>
+  <div class="card"><h2>Recent events</h2><div class="scroll"><table><thead><tr><th>Type</th><th>Detail</th></tr></thead><tbody>${S.events.slice(-12).reverse().map(e=>`<tr><td>${esc(e.type)}</td><td>${esc(e.detail)}</td></tr>`).join('')}</tbody></table></div><p class="muted">Events stay in this tab and contain no personal data.</p></div></div>`}
+
+function vSet(){const s=S.set;const E=S.ui.setErr||{};const nf=(k,l,v,path)=>`<div class="fld"><label for="s-${path}">${l}</label><input id="s-${path}" type="number" data-c="setf" data-k="${path}" value="${v}">${E[path]?`<div class="err" role="alert">${E[path]}</div>`:''}</div>`;
+  const t=S.ui.tests;
+  return header('Settings')+`<div class="page"><div class="grid two"><div class="card"><h2>Rules and weights</h2><form data-f="settings" novalidate><div class="row">${nf('c','Verification cycle (days)',s.cycle,'cycle')}${nf('h','Hospital cycle (days)',s.hospCycle,'hospCycle')}${nf('b','Removal window (business days)',s.breachDays,'breachDays')}${nf('hi','High-risk threshold',s.high,'high')}</div>
+  <div class="row">${Object.entries({never:'Never verified',past:'Past cycle',p75:'Past 75% of cycle',r120:'Roster over 120 days',r60:'Roster 60 to 120 days',addr:'Address mismatch',claims:'No claims in 12 months',out2:'Two or more failed outreach'}).map(([k,l])=>nf(k,l,s.w[k],'w.'+k)).join('')}</div>
+  <div class="row"><button class="btn primary" type="submit">Apply settings</button><button class="btn" type="button" data-a="setdef">Restore default rules</button></div></form></div>
+  <div class="card"><h2>Data and persistence</h2><p>Records are held in this browser tab. Refreshing the page restores the seeded dataset. Nothing is written to a server.</p><button class="btn danger" data-a="resetask">Reset all data to the seeded dataset</button>
+  <h2 style="margin-top:18px">Self-tests</h2><p class="muted">Runs ${22} checks of the rules and calculations against this code in your browser.</p><button class="btn solid" data-a="tests">Run self-tests</button>
+  ${t?`<p><b>${t.filter(x=>x.ok).length} of ${t.length} passed.</b></p>${t.map(x=>`<div><span class="pill ${x.ok?'p-ok':'p-rm'}">${x.ok?'Pass':'Fail'}</span> ${x.id} ${esc(x.name)} ${x.msg?'<span class="err">'+esc(x.msg)+'</span>':''}</div>`).join('')}`:''}</div></div></div>`}
+
+function drawer(){if(!S.ui.drawer)return '';return `<aside class="drawer" role="dialog" aria-label="About this console"><div class="row" style="justify-content:space-between"><h2>About this console</h2><button class="btn sm" data-a="drawer">Close</button></div>
+  <h3 style="margin-top:12px">What it computes</h3><p>Risk scoring and confidence, filters, sorting and queue ranking, field-level verification and corrections, removal-window and breach calculation, KPI, donut, trend and map recomputation, stratified sampling and confidence margin, the NPI check-digit test, duplicate detection and merge, complaint resolution, step and time counting, validation and configurable rules.</p>
+  <h3>Rules in force</h3><p>Verification cycle ${S.set.cycle} days, ${S.set.hospCycle} for hospitals. Removal window ${S.set.breachDays} business days after a recorded departure. High risk at ${S.set.high} and above. Accuracy margin at 95%: 1.96 &times; sqrt(p(1-p)/n). All editable in Settings.</p>
+  <h3>Scope</h3><p>Outreach outcomes and sample call results are generated inside the app rather than placed or dialled, and the question bar matches keywords rather than calling a language model. Records reset to the seeded set on refresh.</p></aside>`}
+function dialog(){const d=S.ui.dialog;if(!d)return '';return `<div class="overlay"><div class="dlg" role="dialog" aria-modal="true" aria-label="${esc(d.title)}"><h2>${esc(d.title)}</h2><div style="margin:10px 0">${d.html||esc(d.msg)}</div><div class="row">${d.act?`<button class="btn danger" data-a="cfm" id="dfocus">${esc(d.label||'Confirm')}</button>`:''}<button class="btn" data-a="cancel" ${d.act?'':'id="dfocus"'}>${d.act?'Cancel':'Close'}</button></div></div></div>`}
+
+function render(){const sc=S.ui.screen;let body;
+  if(sc==='start'){$('app').innerHTML=vStart()+dialog();return}
+  const V={dash:vDash,seg:vSeg,queue:vQueue,record:vRecord,out:vOutreach,dq:vDQ,dup:vDup,ins:vIns,set:vSet};body=V[sc]();
+  const on=sc==='record'?'queue':sc;
+  $('app').innerHTML=`<div class="shell"><nav class="rail" aria-label="Main"><div class="logo" aria-hidden="true">M</div>${NAV.map(n=>`<button class="nb ${on===n[2]?'on':''}" data-a="nav" data-v="${n[2]}" ${on===n[2]?'aria-current="page"':''}><svg viewBox="0 0 24 24" aria-hidden="true">${ICON[n[0]]}</svg>${n[1]}</button>`).join('')}</nav><main class="main">${body}</main></div>${drawer()}${dialog()}${S.ui.toast?`<div class="toast ${S.ui.toast.bad?'bad':''}" role="status">${esc(S.ui.toast.msg)}</div>`:''}`;
+  const f=$('dfocus');if(f)f.focus()}
+
+/* ---------------- events ---------------- */
+function csvOf(rows){const q=v=>'"'+String(v).replace(/"/g,'""')+'"';return ['id,name,specialty,state,risk_score,confidence,days_since_verified,recommendation,owner'].concat(rows.map(r=>[r.p.id,r.p.name,r.p.spec,r.p.state,r.sc,r.conf,r.age===null?'never':r.age,r.rec,r.p.owner].map(q).join(','))).join('\n')}
+document.addEventListener('click',e=>{const t=e.target.closest('[data-a]');if(!t)return;const a=t.dataset.a,v=t.dataset.v;
+  switch(a){
+    case 'role':{S.ui.role=v;S.f.flag=v==='compliance'?'breach':v==='network'?'pending':'complaints';log('role',v,true);S.ui.screen='dash';render();break}
+    case 'nav':go(v);break;
+    case 'flag':S.f.flag=v;log('flag',v,true);S.ui.screen='queue';S.ui.sort={k:'score',d:-1};S.ui.page=0;render();break;
+    case 'filt':S.f[t.dataset.k]=v;log('filter',t.dataset.k+'='+v,true);if(t.dataset.go)S.ui.screen=t.dataset.go;S.ui.page=0;render();break;
+    case 'unf':S.f[t.dataset.k]='';log('filter','clear '+t.dataset.k,true);render();break;
+    case 'clearf':S.f={state:'',spec:'',group:'',type:'',band:'',flag:''};log('filter','clear all',true);render();break;
+    case 'tab':S.ui.tab=v;render();break;
+    case 'sort':{const s=S.ui.sort;S.ui.sort=s.k===v?{k:v,d:-s.d}:{k:v,d:v==='score'||v==='age'?-1:1};log('sort',v,true);render();break}
+    case 'page':S.ui.page+=+v;render();break;
+    case 'open':S.ui.sel=v;S.ui.form=null;log('open_record',v,true);S.ui.screen='record';render();window.scrollTo(0,0);break;
+    case 'assign':{const ids=Object.keys(S.ui.checked).filter(i=>S.ui.checked[i]);ids.forEach(i=>{S.P.find(p=>p.id===i).owner=S.ui.assignTo});S.ui.checked={};log('assign',ids.length+' to '+S.ui.assignTo,true);toast(`${ids.length} records assigned to ${S.ui.assignTo}.`);render();break}
+    case 'csv':{const csv=csvOf(filteredRows());S.ui.dialog={title:'CSV export',html:`<p class="muted">Downloads are not available here. Copy the text below.</p><textarea rows="8" readonly id="csvbox">${esc(csv)}</textarea><button class="btn sm" data-a="copycsv">Copy</button>`};log('export','csv',true);render();break}
+    case 'copycsv':{try{navigator.clipboard.writeText($('csvbox').value).then(()=>toast('Copied.'),()=>{$('csvbox').select();toast('Select the text and copy it.',true)})}catch(x){$('csvbox').select();toast('Select the text and copy it.',true)}break}
+    case 'rmask':S.ui.dialog={title:'Remove from directory?',msg:`Remove ${v} from the active directory. This is recorded in its history and cannot be undone except by resetting data.`,act:'remove',arg:v,label:'Remove listing'};render();break;
+    case 'mergeask':S.ui.dialog={title:'Merge duplicate records?',msg:`Keep ${v.split('|')[0]} and merge ${v.split('|')[1]} into it. The second record will be marked merged.`,act:'merge',arg:v,label:'Merge'};render();break;
+    case 'resetask':S.ui.dialog={title:'Reset all data?',msg:'This discards every change made in this session and restores the seeded dataset.',act:'reset',label:'Reset data'};render();break;
+    case 'cancel':S.ui.dialog=null;render();break;
+    case 'cfm':{const d=S.ui.dialog;S.ui.dialog=null;
+      if(d.act==='remove'){removeRecord(S,d.arg);log('remove',d.arg,true);toast(`${d.arg} removed from the directory.`);S.ui.screen='queue'}
+      else if(d.act==='merge'){const [k,x]=d.arg.split('|');mergeDup(S,k,x);log('merge',d.arg,true);toast(`Merged ${x} into ${k}.`)}
+      else if(d.act==='reset'){const ui=S.ui;S=freshState();S.ui.screen='set';toast('Data reset to the seeded dataset.')}
+      render();break}
+    case 'dismiss':S.dismissed.push(v);log('dismiss',v,true);toast('Marked as not a duplicate.');render();break;
+    case 'launch':{const tg=campaignTargets(S,listFor(S),S.ui.camp.band);const r=campaignLaunch(S,tg,S.ui.camp.channel);log('campaign',`${r.ok}/${r.n}`,true);toast(`Campaign complete: ${r.ok} of ${r.n} records verified. KPIs updated.`);render();break}
+    case 'fill':fillSample(S,.75);log('sample','fill',true);render();break;
+    case 'tests':S.ui.tests=runTests();render();break;
+    case 'setdef':S.set=JSON.parse(JSON.stringify(DEF));S.ui.setErr=null;toast('Default rules restored.');render();break;
+    case 'drawer':S.ui.drawer=!S.ui.drawer;render();break;
+  }});
+document.addEventListener('change',e=>{const t=e.target.closest('[data-c]');if(!t)return;const c=t.dataset.c,k=t.dataset.k;
+  if(c==='filt'){S.f[k]=t.value;log('filter',k+'='+t.value,true);S.ui.page=0;render()}
+  else if(c==='assignTo'){S.ui.assignTo=t.value}
+  else if(c==='chk'){S.ui.checked[k]=t.checked;render()}
+  else if(c==='fo'){S.ui.form[k]=t.value;log('set_outcome',k+'='+t.value,true);render()}
+  else if(c==='fi'){S.ui.form[k]=t.value}
+  else if(c==='camp'){S.ui.camp[k]=k==='agents'?Math.max(1,Math.min(50,parseInt(t.value)||1)):t.value;render()}
+  else if(c==='sampleN'){S.ui.sampleN=parseInt(t.value)||0}
+  else if(c==='sres'){S.sample.items[+k].result=t.value||null;log('sample','result',true);render()}
+  else if(c==='setf'){S.ui.pendingSet=S.ui.pendingSet||{};S.ui.pendingSet[k]=t.value}});
+document.addEventListener('input',e=>{const t=e.target.closest('[data-c="fi"],[data-c="setf"]');if(!t)return;if(t.dataset.c==='fi')S.ui.form[t.dataset.k]=t.value;else{S.ui.pendingSet=S.ui.pendingSet||{};S.ui.pendingSet[t.dataset.k]=t.value}});
+document.addEventListener('submit',e=>{const f=e.target.dataset.f;if(!f)return;e.preventDefault();
+  if(f==='ask'){const txt=$('askq').value.trim();S.ui.q=txt;if(!txt){toast('Type a question, for example: high risk in TX.',true);return}
+    const pf=parseAsk(txt);log('ask',txt,true);if(!pf){toast('I could not interpret that. Try "high risk in TX", "breaches", "never verified cardiology".',true);render();return}
+    S.f=pf;S.ui.screen='queue';S.ui.page=0;const n=listFor(S).length;render();toast(`${n} records match.`)}
+  else if(f==='search'){S.ui.search=$('sq').value;S.ui.page=0;render()}
+  else if(f==='verify'){const id=S.ui.sel,F=S.ui.form;const r=verifyRecord(S,id,F);
+    if(!r.ok){F.errors=r.errors;toast('Fix the highlighted fields to save.',true);render();return}
+    log('save_verification',id,true);const secs=(Date.now()-(S.task.start||Date.now()))/1000;S.taskResults.push({id,steps:S.task.steps,secs});S.task={start:null,steps:0};S.ui.form=null;
+    toast(r.concl?`${id} verified. KPIs recomputed.`:`${id}: all fields inconclusive; counted as a failed attempt.`);S.ui.screen=r.concl&&S.P.find(p=>p.id===id).status!=='active'?'queue':'record';render()}
+  else if(f==='draw'){const n=S.ui.sampleN;if(!(n>=20&&n<=200)){S.ui.dqErr='Sample size must be a whole number between 20 and 200.';render();return}S.ui.dqErr='';drawSample(S,n);log('sample','draw '+n,true);render()}
+  else if(f==='settings'){const pend=S.ui.pendingSet||{};const err={};const ns=JSON.parse(JSON.stringify(S.set));
+    Object.keys(pend).forEach(k=>{const v=Number(pend[k]);const lim=k==='cycle'||k==='hospCycle'?[1,730]:k==='breachDays'?[0,30]:k==='high'?[1,100]:[0,100];
+      if(pend[k]===''||!Number.isFinite(v)||!Number.isInteger(v)||v<lim[0]||v>lim[1]){err[k]=`Enter a whole number from ${lim[0]} to ${lim[1]}.`;return}
+      if(k.startsWith('w.'))ns.w[k.slice(2)]=v;else ns[k]=v});
+    if(Object.keys(err).length){S.ui.setErr=err;toast('Fix the highlighted settings.',true);render();return}
+    S.set=ns;S.ui.setErr=null;S.ui.pendingSet={};log('settings','applied',true);toast('Settings applied. All scores recomputed.');render()}});
+render();
+window.__DEMO={get S(){return S},runTests,generate,freshState,score,metrics,render,parseAsk,listFor,verifyRecord,drawSample,fillSample,sampleStats};
+</script>
+</body>
+</html>
