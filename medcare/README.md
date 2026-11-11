@@ -1,44 +1,61 @@
-# MedCare Roster Confirmation
+# Roster validation and submission layer
 
-Working prototype for the MedCare provider portal case study. Single static page,
+Working prototype for a provider data management case study. Single static page,
 no backend, no login, no build step. Synthetic data only.
 
 ## The idea
-Instead of asking a practice to re-enter its roster, the app shows the practice what
-the plan already holds, marks the listings MedCare's validation believes are wrong,
-says why, and asks for a confirmation or a correction. The answer writes back to the
-plan's directory and moves every plan-side number.
+Rosters reach health plans as spreadsheets by email, occasional SFTP files and
+telephone calls, and are corrected weeks later. This validates every row against
+registry, licensing and exclusion reference sources before it is submitted, shows
+the submitter exactly what differs from the plan record, and gives the plan a
+versioned review queue that writes through to the provider master and emits
+typed events to downstream systems.
 
-## Both sides of the loop
-- **Practice manager** - roster ranked by what looks wrong, per-listing explanation,
-  confirm / correct / remove at the provider-location level, submission history.
-- **Plan network operations** - verification queue ranked by each listing's position in
-  its own 90-day window, explainable score, CSV export.
-- **Plan compliance** - directory health KPIs, basis mix, six-month trend, readiness
-  checks and the confirmation log.
+## Three submitter types, one plan
+The three submitter types behave differently and the prototype carries all three:
+an independent practice (8 clinicians, one location, occasional manual file), a
+large group credentialing team (34 clinicians, four locations, monthly bulk file),
+and a delegated entity data steward (96 clinicians, nine locations, contractual
+accountability for accuracy).
 
-## Rules implemented
-- 90-day verification cycle per listing; publication within 2 business days.
-- Flag weights: never verified 35, past window 20, no claims in 14 months 30,
-  dropped from the roster file 25, address mismatch 15, member reported 25,
-  provider at 4+ locations 15, invalid NPI 10. Score capped at 100.
-- Confidence from four corroborating signals: High 3-4, Medium 2, Low 0-1.
-- Basis per listing: attested, inferred, carried over, never verified - never blended.
-- NPI check digit by Luhn over the 80840 prefix.
+## What it does
+- **Upload** a CSV, paste rows, or load the organisation's current file.
+- **Validate** every row against twelve checks, each carrying its rule, its source,
+  whether it is deterministic or inferred, and a confidence. Errors block
+  submission; warnings may be submitted with an attestation. Rows are editable
+  in place and re-validate on demand.
+- **Compare** against the plan record: new, changed, terminated, unchanged, and
+  listings absent from the file (an implied termination).
+- **Attest and submit**, producing a versioned submission.
+- **Review** row by row on the plan side, approve or reject with a reason, then
+  apply to the provider master.
+- **Measure**: attested share, attested within cycle, first-pass validation,
+  turnaround, activation and downstream events, each with a definition, source,
+  owner, threshold and next action. Per-field freshness is reported separately.
 
-## Why "provider at 4+ locations" is a flag
-CMS found the largest directory error class is "provider not at this location", caused
-by practices submitting at group level so every provider appears at every site. The app
-treats the provider-location attachment as its primary object and tracks corrections to
-it separately.
+## Validation checks
+NPI format; NPI check digit (Luhn over the 80840 prefix); NPI present in the
+registry extract; TIN format; licence status; exclusion list; taxonomy code;
+panel status; effective date validity and future dating; termination date
+validity, ordering and past dating; telephone format; duplicate NPI and location;
+location on file for the TIN; identity match confidence against the provider master.
+
+## Attested against inferred
+Deterministic checks are labelled as rules. Checks consulting a reference source
+are labelled as inferred and carry a confidence. The two are never blended, and
+the dashboard reports attested, inferred and carried-over shares separately. A
+registry extract carries a reporting lag, so it is treated as a reference and
+never as ground truth; the submitter attestation is the freshest signal.
 
 ## Data
-20 practices, 44 locations, 475 providers, 838 listings and 70 member reports, generated
-deterministically (mulberry32, seed 20261111) with an as-of date of 2026-11-11. State
-lives in the browser tab and resets on refresh.
+138 listings across three submitter types, 14 locations, with a registry extract,
+a licensing feed and an exclusion list, all generated deterministically
+(mulberry32, seed 20261111) with an as-of date of 2026-11-11. Every record is
+synthetic. State lives in the browser tab and resets on refresh.
 
 ## Self-tests
-Settings > Run self-tests executes 25 checks of the rules and calculations in the browser.
+Settings > Run self-tests executes 32 checks of parsing, validation, identity
+matching, diffing, submission, review and measurement in the browser.
 
 ## Run locally
 Open `index.html`. There is nothing to install.
