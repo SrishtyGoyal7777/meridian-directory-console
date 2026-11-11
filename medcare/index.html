@@ -6,97 +6,96 @@
 <title>Roster Validation and Submission Layer</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-:root{--navy:#031335;--navy2:#072669;--blue:#2a6af1;--blue2:#5386f4;--blue3:#a9c2f9;--aqua:#1bbce4;--purple:#7034ea;--orange:#ec700a;--t1:#29303d;--t2:#465167;--t3:#5a6884;--bg:#f5f6fa;--line:#e2e8f7;--ok:#73b124;--bad:#e25f5a;--okt:#4a7a0a;--badt:#b3302b;--ort:#a84d00}
+:root{--navy:#031335;--navy2:#072669;--blue:#2a6af1;--blue2:#5386f4;--blue3:#a9c2f9;--aqua:#1bbce4;--purple:#7034ea;--orange:#ec700a;--t1:#29303d;--t2:#465167;--t3:#5a6884;--bg:#f5f6fa;--card:#fff;--ok:#73b124;--bad:#e25f5a;--line:#e2e8f7;--okt:#4a7a0a;--badt:#b3302b;--ort:#a84d00}
 *{box-sizing:border-box}
 body{margin:0;font-family:'Satoshi','Inter',system-ui,-apple-system,'Segoe UI',sans-serif;background:var(--bg);color:var(--t1);font-size:14px;line-height:1.45}
 h1,h2,h3{margin:0;color:var(--navy2);font-weight:800;letter-spacing:-.01em}
-h1{font-size:21px}h2{font-size:16px}h3{font-size:13px}
+h1{font-size:22px}h2{font-size:16px}h3{font-size:13px}
 button,input,select,textarea{font:inherit;color:inherit}
 :focus-visible{outline:3px solid var(--aqua);outline-offset:2px}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
 .shell{display:grid;grid-template-columns:86px minmax(0,1fr);min-height:100vh}
-.rail{background:var(--navy);position:sticky;top:0;height:100vh;display:flex;flex-direction:column;align-items:center;padding:14px 0;gap:3px}
-.logo{width:40px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--blue),var(--purple));color:#fff;display:grid;place-items:center;font-weight:900;margin-bottom:10px;font-size:12px}
+.rail{background:var(--navy);position:sticky;top:0;height:100vh;display:flex;flex-direction:column;align-items:center;padding:14px 0;gap:4px}
+.logo{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--blue),var(--purple));color:#fff;display:grid;place-items:center;font-weight:900;margin-bottom:10px;font-size:13px}
 .nb{width:74px;padding:8px 2px;border-radius:12px;color:var(--blue3);background:none;border:0;font-size:10px;font-weight:700;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center;line-height:1.15}
-.nb svg{width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.nb svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .nb:hover{background:#0b1f52}.nb.on{background:var(--blue);color:#fff}
 .rail .sp{flex:1}
-.top{box-shadow:0 1px 0 rgba(7,38,105,.04);display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding:13px 20px;background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}
+.main{min-width:0}
+.top{box-shadow:0 1px 0 rgba(7,38,105,.04);display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding:14px 22px;background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}
 .top .sp{flex:1}
-.page{padding:18px 20px 44px;max-width:1320px}
+.page{padding:20px 22px 44px;max-width:1320px}
 .btn{border:1px solid var(--blue3);background:#fff;color:var(--navy2);border-radius:999px;padding:7px 16px;font-weight:700;cursor:pointer}
 .btn:hover{background:#eef3ff}
 .btn.primary{background:linear-gradient(90deg,var(--blue),var(--purple));color:#fff;border:0}
 .btn.primary:hover{filter:brightness(1.08)}
 .btn.solid{background:var(--blue);color:#fff;border:0}
 .btn.danger{border-color:var(--bad);color:var(--badt)}
-.btn.good{border-color:var(--ok);color:var(--okt)}
+.btn.ok{border-color:var(--ok);color:var(--okt)}
 .btn.sm{padding:4px 12px;font-size:12px}
 .btn[disabled]{opacity:.45;cursor:not-allowed}
 .grid{display:grid;gap:14px}
-.kpis{grid-template-columns:repeat(auto-fit,minmax(214px,1fr));margin-bottom:14px}
-.kpi{background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px 16px;text-align:left;box-shadow:0 1px 2px rgba(7,38,105,.04),0 8px 24px -16px rgba(7,38,105,.18)}
-.kpi .l{color:var(--t3);font-size:12px;font-weight:700}
-.kpi .v{font-size:25px;font-weight:900;color:var(--navy2);line-height:1.2}.kpi .v.txt{font-size:16px}
-.kpi .s{font-size:11px;color:var(--t3);margin-top:2px}
-.kpi details{margin-top:8px}
-.kpi summary{font-size:11px;color:var(--blue);cursor:pointer;font-weight:700}
-.kpi dl{margin:6px 0 0;font-size:11px;color:var(--t2);display:grid;grid-template-columns:auto 1fr;gap:2px 8px}
-.kpi dt{font-weight:700;color:var(--t3)}.kpi dd{margin:0}
+.kpis{grid-template-columns:repeat(auto-fit,minmax(192px,1fr));margin-bottom:14px}
+.kpi{background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px 16px;text-align:left;box-shadow:0 1px 2px rgba(7,38,105,.04),0 8px 24px -16px rgba(7,38,105,.18);transition:border-color .15s,transform .15s;cursor:pointer;width:100%}
+.kpi:hover{border-color:var(--blue2);transform:translateY(-2px)}
+.kpi .l{color:var(--t3);font-size:12px;font-weight:600}.kpi .v{font-size:24px;font-weight:900;color:var(--navy2);line-height:1.2}.kpi .v.txt{font-size:16px}.kpi .s{font-size:11px;color:var(--t3)}
+.kpi .th{font-size:11px;font-weight:700;margin-top:4px}
 .card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px 18px;box-shadow:0 1px 2px rgba(7,38,105,.04),0 8px 24px -16px rgba(7,38,105,.18)}
 .card h2{margin-bottom:10px}
-.two{grid-template-columns:repeat(auto-fit,minmax(330px,1fr));align-items:start}
+.two{grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);align-items:start}
+.two-e{grid-template-columns:repeat(auto-fit,minmax(330px,1fr));align-items:start}
+@media(max-width:900px){.two{grid-template-columns:1fr}}
 .scroll{overflow-x:auto}
 table{border-collapse:collapse;width:100%}
 th,td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--line);font-size:13px;white-space:nowrap;vertical-align:top}
 th{color:var(--t3);font-size:12px;font-weight:700}
 tr.click:hover{background:#f3f7ff;cursor:pointer}
-tr.rowerr{background:#fdf3f2}tr.rowwarn{background:#fff8f0}
 .pill{display:inline-block;border-radius:999px;padding:2px 9px;font-size:11px;font-weight:800}
 .p-ok{background:#e9f5d6;color:var(--okt)}.p-nv{background:#e3ecff;color:var(--navy2)}.p-in{background:#ffe9d6;color:var(--ort)}.p-rm{background:#fde1df;color:var(--badt)}.p-gr{background:#edf0f6;color:var(--t2)}.p-at{background:#d9f3f9;color:#0b6a85}
-.tabs{display:flex;gap:6px;flex-wrap:wrap}
-.tab{border:1px solid var(--line);background:#fff;border-radius:999px;padding:4px 13px;font-weight:700;cursor:pointer;color:var(--t2);font-size:12px}
+.tabs{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap}
+.tab{border:1px solid var(--line);background:#fff;border-radius:999px;padding:4px 14px;font-weight:700;cursor:pointer;color:var(--t2)}
 .tab.on{background:var(--navy2);color:#fff;border-color:var(--navy2)}
 label{display:block;font-weight:700;font-size:12px;color:var(--t2);margin-bottom:3px}
-input[type=text],input[type=number],select,textarea{width:100%;border:1px solid #c9d4ee;border-radius:10px;padding:7px 10px;background:#fff;font-size:13px}
-textarea{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px}
+input[type=text],input[type=number],input[type=date],select,textarea{width:100%;border:1px solid #c9d4ee;border-radius:10px;padding:7px 10px;background:#fff;font-family:inherit}
+textarea{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px}
 .err{color:var(--badt);font-size:12px;font-weight:600;margin-top:3px}
 .fld{margin-bottom:10px}
 .row{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}
 .muted{color:var(--t3)}
-.hero{background:radial-gradient(1200px 500px at 80% -10%,#2a3fb0 0,transparent 60%),var(--navy);color:#fff;padding:44px 28px;min-height:100vh;display:flex;flex-direction:column;justify-content:center}
-.hero h1{color:#fff;font-size:38px;font-weight:900;max-width:880px;line-height:1.14;margin-bottom:14px}
-.hero p{color:#cdd9f7;max-width:740px;font-size:15px}
-.badge{display:inline-block;background:rgba(27,188,228,.12);color:#5fe3ff;border:1px solid rgba(95,227,255,.5);border-radius:999px;padding:4px 14px;font-weight:700;font-size:12px;margin-bottom:18px;width:fit-content}
-.roles{display:grid;grid-template-columns:repeat(auto-fit,minmax(228px,1fr));gap:12px;margin-top:22px}
-.role{background:rgba(255,255,255,.96);color:var(--t1);border:0;border-radius:16px;padding:16px;text-align:left;cursor:pointer;transition:transform .15s,box-shadow .15s;box-shadow:0 18px 40px -24px rgba(0,0,0,.6)}
+.hero{background:radial-gradient(1200px 500px at 80% -10%,#2a3fb0 0,transparent 60%),var(--navy);color:#fff;padding:48px 30px 40px;min-height:100vh;display:flex;flex-direction:column;justify-content:center}
+.hero h1{color:#fff;font-size:38px;font-weight:900;max-width:860px;line-height:1.13;margin-bottom:14px}
+.hero p{color:#cdd9f7;max-width:720px;font-size:15px}
+.badge-sim{display:inline-block;background:rgba(27,188,228,.12);color:#5fe3ff;border:1px solid rgba(95,227,255,.5);border-radius:999px;padding:4px 14px;font-weight:700;font-size:12px;margin-bottom:18px;letter-spacing:.02em;width:fit-content}
+.roles{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px;margin-top:24px}
+.role{background:rgba(255,255,255,.96);color:var(--t1);border:0;border-radius:18px;padding:18px;text-align:left;cursor:pointer;transition:transform .15s,box-shadow .15s;box-shadow:0 18px 40px -24px rgba(0,0,0,.6)}
 .role:hover{transform:translateY(-3px);box-shadow:0 0 0 2px var(--aqua),0 22px 44px -24px rgba(0,0,0,.7)}
-.role b{color:var(--navy2);font-size:15px;display:block;margin-bottom:3px}
-.role span{font-size:12.5px}
+.role b{color:var(--navy2);font-size:16px;display:block;margin-bottom:4px}
 .bar{height:8px;border-radius:99px;background:#e8eefc;overflow:hidden}.bar i{display:block;height:100%;background:var(--blue)}
 .warn{background:#fff3e6;border:1px solid var(--orange);border-radius:12px;padding:10px 12px;margin-bottom:12px;color:var(--ort);font-weight:600}
 .bad{background:#fdeceb;border:1px solid var(--bad);border-radius:12px;padding:10px 12px;margin-bottom:12px;color:var(--badt);font-weight:600}
 .okb{background:#eef7dd;border:1px solid var(--ok);border-radius:12px;padding:10px 12px;margin-bottom:12px;color:var(--okt);font-weight:600}
-.chk{border-left:3px solid var(--line);padding:4px 0 4px 10px;margin-bottom:6px;font-size:12px}
-.chk.e{border-color:var(--bad)}.chk.w{border-color:var(--orange)}.chk.i{border-color:var(--blue3)}
-.chk b{color:var(--navy2)}
-.chk .meta{color:var(--t3);font-size:11px}
+.info{background:#eef3ff;border:1px solid var(--blue3);border-radius:12px;padding:10px 12px;margin-bottom:12px;color:var(--navy2)}
+.tl{border-left:2px solid var(--blue3);margin-left:6px;padding-left:12px}.tl div{margin-bottom:9px}
 .overlay{position:fixed;inset:0;background:rgba(3,19,53,.55);display:grid;place-items:center;z-index:50;padding:16px}
 .dlg{background:#fff;border-radius:16px;padding:20px;max-width:620px;width:100%;max-height:90vh;overflow:auto}
 .drawer{position:fixed;top:0;right:0;bottom:0;width:min(440px,100%);background:#fff;z-index:40;box-shadow:-8px 0 30px rgba(3,19,53,.25);padding:20px;overflow:auto}
 .toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:var(--navy);color:#fff;padding:10px 18px;border-radius:999px;z-index:60;font-weight:600;max-width:90vw}
 .toast.bad{background:var(--badt)}
-.steps{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
-.step{display:flex;align-items:center;gap:6px;border:1px solid var(--line);background:#fff;border-radius:999px;padding:5px 13px;font-size:12px;font-weight:700;color:var(--t3)}
-.step.on{border-color:var(--blue);color:var(--navy2);background:#eef3ff}
-.step.done{border-color:var(--ok);color:var(--okt);background:#f4fae9}
-.step i{display:grid;place-items:center;width:18px;height:18px;border-radius:50%;background:var(--line);color:var(--t2);font-style:normal;font-size:11px}
-.step.on i{background:var(--blue);color:#fff}.step.done i{background:var(--ok);color:#fff}
-.ev{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11.5px;background:#0b1f52;color:#cfe0ff;border-radius:10px;padding:10px 12px;margin-bottom:8px;overflow-x:auto;white-space:pre}
-.fresh{display:grid;grid-template-columns:140px 1fr auto;gap:6px 10px;align-items:center;font-size:12px}
-.diffold{color:var(--badt);text-decoration:line-through}.diffnew{color:var(--okt);font-weight:700}
-@media(max-width:860px){.shell{grid-template-columns:minmax(0,1fr)}.rail{position:fixed;bottom:0;left:0;right:0;top:auto;height:auto;flex-direction:row;overflow-x:auto;z-index:20;padding:6px;justify-content:flex-start}.rail .sp,.logo{display:none}.main{padding-bottom:84px}.top{position:static}.page{padding:14px 12px 30px}.hero{padding:30px 16px}.hero h1{font-size:26px}}
-@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+.legend span{margin-right:12px;font-size:12px;color:var(--t2)}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:4px}
+.rowc{border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:8px;background:#fff}
+.rowc.e{border-color:var(--bad);background:#fffafa}
+.rowc.w{border-color:var(--orange);background:#fffbf6}
+.rowc.okr{border-color:var(--ok);background:#fbfdf6}
+.find{background:var(--bg);border-radius:9px;padding:7px 9px;margin-top:7px;font-size:12px;color:var(--t2)}
+.find b{color:var(--navy2)}
+.src{font-size:11px;color:var(--t3)}
+.diffadd{background:#e9f5d6}.diffchg{background:#ffe9d6}.diffdel{background:#fde1df}
+.mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px}
+.feed{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11.5px;background:#071a3d;color:#cfe0ff;border-radius:12px;padding:12px;max-height:300px;overflow:auto}
+.feed div{margin-bottom:5px;white-space:pre-wrap;word-break:break-word}
+@media(max-width:820px){.shell{grid-template-columns:minmax(0,1fr)}.rail{position:fixed;bottom:0;left:0;right:0;top:auto;height:auto;flex-direction:row;overflow-x:auto;z-index:20;padding:6px;justify-content:flex-start}.rail .sp{display:none}.logo{display:none}.main{padding-bottom:84px}.top{position:static;padding:12px}.page{padding:14px 12px 30px}.hero{padding:32px 16px}.hero h1{font-size:26px}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 </head>
 <body>
@@ -104,801 +103,817 @@ textarea{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px}
 <div id="live" class="sr" aria-live="polite"></div>
 <script>
 'use strict';
-/* =====================================================================
-   LOGIC LAYER (DOM-free). Synthetic data only.
-   ===================================================================== */
+/* ==========================================================
+   LOGIC LAYER (DOM-free)
+   ========================================================== */
 const SEED=20261111, ASOF_ISO='2026-11-11';
 function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
 const toDay=iso=>{const [y,m,d]=String(iso).split('-').map(Number);return Math.round(Date.UTC(y,m-1,d)/864e5)};
 const fromDay=n=>new Date(n*864e5).toISOString().slice(0,10);
 const ASOF=toDay(ASOF_ISO);
-function bizDays(a,b){let c=0;for(let d=toDay(a)+1;d<=toDay(b);d++){const w=new Date(d*864e5).getUTCDay();if(w!==0&&w!==6)c++}return c}
-function npiValid(n){n=String(n||'');if(!/^\d{10}$/.test(n))return false;const s='80840'+n;let sum=0,alt=false;
+const isDate=s=>/^\d{4}-\d{2}-\d{2}$/.test(String(s||''))&&!isNaN(Date.parse(s));
+function bizDays(a,b){let c=0;for(let d=a+1;d<=b;d++){const w=new Date(d*864e5).getUTCDay();if(w!==0&&w!==6)c++}return c}
+function npiValid(n){n=String(n);if(!/^\d{10}$/.test(n))return false;const s='80840'+n;let sum=0,alt=false;
   for(let i=s.length-1;i>=0;i--){let d=+s[i];if(alt){d*=2;if(d>9)d-=9}sum+=d;alt=!alt}return sum%10===0}
 function npiMake(b9){for(let c=0;c<10;c++){const n=String(b9)+c;if(npiValid(n))return n}}
-const isoOk=s=>/^\d{4}-\d{2}-\d{2}$/.test(String(s||''))&&!isNaN(Date.parse(s));
-
-const DEF={cycle:90,pubDays:2,matchMin:80,
-  thresholds:{firstPass:85,accuracy:85,turnaroundH:48,activation:50,attested:70,freshnessDays:90}};
-const TAXONOMY={'207R00000X':'Internal Medicine','207Q00000X':'Family Medicine','208000000X':'Paediatrics',
-  '207RC0000X':'Cardiology','207N00000X':'Dermatology','2084P0800X':'Psychiatry','207V00000X':'Obstetrics and Gynaecology',
-  '207T00000X':'Neurological Surgery','207RX0202X':'Medical Oncology','207RE0101X':'Endocrinology'};
-const TAXKEYS=Object.keys(TAXONOMY);
-const PANEL=['Open','Closed','Existing patients only'];
-const FIELDS=['name','taxonomy','address','phone','panelStatus','effectiveDate'];
-const FIELD_LABEL={name:'Provider name',taxonomy:'Taxonomy',address:'Practice location',phone:'Telephone',panelStatus:'Panel status',effectiveDate:'Effective date'};
-const FIRST=['Aisha','Rohan','Maria','James','Lena','Omar','Priya','Daniel','Chen','Sofia','Marcus','Hana','Luis','Nora','Victor','Elena','Samir','Grace','Tomas','Ivy','Noor','Felix'];
-const LAST=['Rao','Nguyen','Alvarez','Brooks','Kim','Haddad','Patel','Foster','Zhou','Ricci','Walker','Sato','Gomez','Larsen','Mehta','Cole','Dubois','Okafor','Reyes','Hale'];
-const NEWLAST=['Whitlock','Carrington','Delacroix','Fairbanks','Ingram','Mortimer','Sheridan','Ashworth'];
-const TOWN=['Fairview','Clifton','Georgetown','Salem','Milton','Ashland','Bedford','Dover','Kingston','Newport'];
-const STREET=['Maple','Oak','Cedar','Lake','Hill','Park','River','Birch'];
 const pad=(n,w)=>String(n).padStart(w,'0');
-const fmtPhone=d=>`(${d.slice(0,3)}) ${d.slice(3,6)}-${d.slice(6)}`;
-const phoneDigits=s=>String(s||'').replace(/\D/g,'');
-const phoneOk=s=>phoneDigits(s).length===10;
+const fmtPhone=s=>{const d=String(s).replace(/\D/g,'');return d.length===10?`(${d.slice(0,3)}) ${d.slice(3,6)}-${d.slice(6)}`:String(s)};
+const phoneOk=s=>String(s).replace(/\D/g,'').length===10;
+const norm=s=>String(s||'').trim().toLowerCase().replace(/\s+/g,' ');
 
-const SUBMITTERS=[
-  {id:'SUB-IND',label:'Independent practice',org:'Northgate Family Practice',tin:'431902887',rows:8,
-    blurb:'Eight clinicians, one location, submits by hand a few times a year.'},
-  {id:'SUB-GRP',label:'Large group credentialing team',org:'Riverbend Health Partners',tin:'528114063',rows:34,
-    blurb:'Thirty-four clinicians across four locations, monthly bulk file.'},
-  {id:'SUB-DEL',label:'Delegated entity data steward',org:'Summit IPA',tin:'770458219',rows:96,
-    blurb:'Ninety-six clinicians under a delegated agreement, contractual accountability for accuracy.'}];
+const TAXONOMY={'207RC0000X':'Cardiovascular Disease','208D00000X':'General Practice','208000000X':'Pediatrics',
+  '207X00000X':'Orthopaedic Surgery','207N00000X':'Dermatology','103T00000X':'Psychologist',
+  '207V00000X':'Obstetrics & Gynecology','2084N0400X':'Neurology','207RX0202X':'Medical Oncology','207RE0101X':'Endocrinology'};
+const TAX_CODES=Object.keys(TAXONOMY);
+const PANEL=['accepting','not_accepting','existing_only'];
+const FIRST=['Aisha','Rohan','Maria','James','Lena','Omar','Priya','Daniel','Chen','Sofia','Marcus','Hana','Luis','Nora','Victor','Elena','Samir','Grace','Tomas','Ivy','Noah','Ruth','Kiran','Paulo'];
+const LAST=['Rao','Nguyen','Alvarez','Brooks','Kim','Haddad','Patel','Foster','Zhou','Ricci','Walker','Sato','Gomez','Larsen','Mehta','Cole','Dubois','Okafor','Reyes','Hale','Baptiste','Novak','Iyer','Mensah'];
+const PRACTICES=['Northgate Medical Group','Riverbend Health Partners','Summit Physicians','Harbor Care Associates','Pinecrest Clinics','Lakeside Medical','Cedar Valley Health','Ironwood Physicians','Bluebird Care Network','Granite Specialty Group','Meadowlark Family Care','Oakline Medical'];
+const STREET=['Maple','Oak','Cedar','Lake','Hill','Park','River','Birch'];
+const TOWN=['Fairview','Clifton','Georgetown','Salem','Milton','Ashland','Bedford','Dover'];
+const STATES=['CA','TX','FL','NY','PA','OH'];
+const FOCAL='SUB-01';
 
-function buildWorld(){
-  const r=mulberry32(SEED);
-  const ri=(a,b)=>a+Math.floor(r()*(b-a+1));
-  const pick=a=>a[Math.floor(r()*a.length)];
-  const nppes={},licences={},oig=new Set(),master=[],locations={};
-  SUBMITTERS.forEach((sub,si)=>{
-    const nloc=si===0?1:si===1?4:9;
-    locations[sub.id]=[];
-    for(let j=1;j<=nloc;j++){
-      const t=TOWN[(si*3+j)%TOWN.length];
-      locations[sub.id].push({id:sub.id+'-L'+j,name:`${t} ${['Clinic','Surgery','Centre','Annexe','Rooms'][j%5]}`,
-        addr:`${ri(10,9899)} ${pick(STREET)} ${pick(['St','Ave','Rd'])}, ${t}`,phone:fmtPhone(String(ri(201,989))+'555'+pad(ri(0,9999),4))});
-    }
-    for(let k=0;k<sub.rows;k++){
-      const npi=npiMake(String(ri(100000000,999999999)));
-      const nm=`Dr ${pick(FIRST)} ${pick(LAST)}`;
-      const tax=pick(TAXKEYS);
-      const loc=locations[sub.id][k%nloc];
-      nppes[npi]={name:nm,taxonomy:tax,updated:fromDay(ASOF-ri(30,900))};
-      licences[npi]={status:r()<0.025?'Expired':r()<0.012?'Not found':'Active',expiry:fromDay(ASOF+ri(-200,900))};
-      if(r()<0.008)oig.add(npi);
-      const attestedAge=ri(5,300);
-      master.push({npi,name:nm,tin:sub.tin,sub:sub.id,org:sub.org,locationId:loc.id,locationName:loc.name,
-        address:loc.addr,phone:loc.phone,taxonomy:tax,panelStatus:pick(PANEL),
-        effectiveDate:fromDay(ASOF-ri(200,1400)),terminationDate:'',
-        lastAttested:fromDay(ASOF-attestedAge),
-        basis:attestedAge<=120?'attested':(r()<0.5?'inferred':'carried'),
-        freshness:FIELDS.reduce((o,f)=>{o[f]=fromDay(ASOF-ri(5,400));return o},{})});
-    }
-  });
-  return {nppes,licences,oig,master,locations}}
+/* ---- validation rule catalogue: every finding is explainable ---- */
+const RULES={
+  npi_format:{sev:'error',label:'NPI fails the check-digit test',src:'NPI standard, Luhn over the 80840 prefix',conf:'High'},
+  npi_unknown:{sev:'error',label:'NPI not found in the provider registry',src:'Registry snapshot (synthetic NPPES stand-in)',conf:'High'},
+  name_mismatch:{sev:'warning',label:'Name differs from the registry record',src:'Registry snapshot',conf:'Medium'},
+  taxonomy_unknown:{sev:'error',label:'Taxonomy code is not a recognised value',src:'Taxonomy code set',conf:'High'},
+  taxonomy_mismatch:{sev:'warning',label:'Taxonomy differs from the registry record',src:'Registry snapshot',conf:'Medium'},
+  license_expired:{sev:'error',label:'State licence is expired',src:'State licensing board (synthetic)',conf:'High'},
+  license_lapsing:{sev:'warning',label:'State licence expires within 60 days',src:'State licensing board (synthetic)',conf:'High'},
+  exclusion:{sev:'error',label:'Provider appears on the exclusion list',src:'Exclusion list (synthetic OIG LEIE stand-in)',conf:'High'},
+  dup_in_file:{sev:'error',label:'Duplicate row: same NPI and location appears twice in this file',src:'This submission',conf:'High'},
+  entity_ambiguous:{sev:'warning',label:'NPI matches a provider recorded under a different name',src:'Entity resolution against the plan record',conf:'Medium'},
+  location_unknown:{sev:'error',label:'Location code is not one of this practice’s contracted sites',src:'Plan contract record',conf:'High'},
+  address_mismatch:{sev:'warning',label:'Address differs from the registry record for this site',src:'Registry snapshot',conf:'Low'},
+  tin_format:{sev:'error',label:'TIN is not nine digits',src:'Submission format rules',conf:'High'},
+  phone_format:{sev:'error',label:'Phone is not a ten-digit number',src:'Submission format rules',conf:'High'},
+  panel_invalid:{sev:'error',label:'Panel status is not an accepted value',src:'Submission format rules',conf:'High'},
+  eff_missing:{sev:'error',label:'Effective date is missing or not a valid date',src:'Submission format rules',conf:'High'},
+  term_before_eff:{sev:'error',label:'Termination date falls before the effective date',src:'Submission format rules',conf:'High'},
+  eff_future:{sev:'warning',label:'Effective date is in the future',src:'Submission format rules',conf:'High'},
+  term_past:{sev:'info',label:'Termination date has passed: this row will delist the provider at this site',src:'Submission format rules',conf:'High'},
+};
+const COLS=['npi','first_name','last_name','taxonomy','tin','location_id','address','phone','panel_status','effective_date','termination_date'];
 
-function buildRosters(W){
-  const r=mulberry32(SEED+7);
-  const ri=(a,b)=>a+Math.floor(r()*(b-a+1));
-  const out={};
-  SUBMITTERS.forEach(sub=>{
-    const mine=W.master.filter(m=>m.sub===sub.id);
-    const rows=[];
-    const g=sub.id==='SUB-IND'?0.4:sub.id==='SUB-GRP'?1:1.25;
-    mine.forEach(m=>{
-      if(r()<0.07*g)return;
-      const o={npi:m.npi,name:m.name,tin:m.tin,locationName:m.locationName,address:m.address,
-        phone:m.phone,taxonomy:m.taxonomy,panelStatus:m.panelStatus,
-        effectiveDate:m.effectiveDate,terminationDate:''};
-      if(r()<0.16*g)o.phone=fmtPhone(String(ri(201,989))+'555'+pad(ri(0,9999),4));
-      if(r()<0.10*g)o.panelStatus=PANEL[(PANEL.indexOf(m.panelStatus)+1)%3];
-      if(r()<0.08*g)o.address=o.address.replace(/^\d+/,String(ri(10,9899)));
-      if(r()<0.05*g)o.taxonomy='207XX9999X';
-      if(r()<0.05*g)o.npi=String(o.npi).slice(0,9)+((Number(o.npi.slice(-1))+1)%10);
-      if(r()<0.03*g)o.npi=o.npi.slice(0,8);
-      if(r()<0.04*g)o.effectiveDate='2027-03-15';
-      if(r()<0.035)o.terminationDate=fromDay(ASOF-ri(10,200));
-      if(r()<0.04*g)o.locationName='Harbour Point Clinic';
-      rows.push(o);
-    });
-    const extra=sub.id==='SUB-IND'?1:sub.id==='SUB-GRP'?3:7;
-    for(let k=0;k<extra;k++){
-      const npi=npiMake(String(ri(100000000,999999999)));
-      const loc=W.locations[sub.id][k%W.locations[sub.id].length];
-      rows.push({npi,name:`Dr ${FIRST[ri(0,FIRST.length-1)]} ${NEWLAST[ri(0,NEWLAST.length-1)]}`,tin:sub.tin,
-        locationName:loc.name,address:loc.addr,phone:loc.phone,taxonomy:TAXKEYS[ri(0,TAXKEYS.length-1)],
-        panelStatus:PANEL[ri(0,2)],effectiveDate:fromDay(ASOF-ri(0,40)),terminationDate:''});
-    }
-    if(rows.length>3)rows.push(Object.assign({},rows[2]));
-    out[sub.id]=rows;
-  });
-  return out}
-
-const COLS=['npi','name','tin','locationName','address','phone','taxonomy','panelStatus','effectiveDate','terminationDate'];
-const COL_LABEL={npi:'NPI',name:'Provider name',tin:'TIN',locationName:'Location',address:'Address',phone:'Telephone',
-  taxonomy:'Taxonomy',panelStatus:'Panel status',effectiveDate:'Effective date',terminationDate:'Termination date'};
-function toCSV(rows){
-  const q=v=>{v=String(v==null?'':v);return /[",\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v};
-  return [COLS.join(',')].concat(rows.map(r=>COLS.map(c=>q(r[c])).join(','))).join('\n')}
+/* ---------- CSV ---------- */
 function parseCSV(text){
-  const t=String(text).replace(/\r\n?/g,'\n').trim();
-  if(!t)return {error:'The file is empty.'};
-  const lines=[];let cur='',row=[],inQ=false;
-  for(let i=0;i<t.length;i++){const c=t[i];
-    if(inQ){if(c==='"'){if(t[i+1]==='"'){cur+='"';i++}else inQ=false}else cur+=c}
-    else if(c==='"')inQ=true;
-    else if(c===','){row.push(cur);cur=''}
-    else if(c==='\n'){row.push(cur);lines.push(row);row=[];cur=''}
-    else cur+=c}
-  row.push(cur);lines.push(row);
-  const head=lines[0].map(h=>h.trim());
+  const rows=[];let cur=[],val='',q=false;
+  const s=String(text).replace(/\r\n/g,'\n').replace(/\r/g,'\n');
+  for(let i=0;i<s.length;i++){const c=s[i];
+    if(q){if(c==='"'){if(s[i+1]==='"'){val+='"';i++}else q=false}else val+=c}
+    else if(c==='"')q=true;
+    else if(c===','){cur.push(val);val=''}
+    else if(c==='\n'){cur.push(val);rows.push(cur);cur=[];val=''}
+    else val+=c}
+  if(val.length||cur.length){cur.push(val);rows.push(cur)}
+  return rows.filter(r=>r.some(c=>String(c).trim()!==''))}
+function rowsToObjects(rows){
+  if(!rows.length)return {error:'The file is empty.'};
+  const head=rows[0].map(h=>norm(h).replace(/ /g,'_'));
   const missing=COLS.filter(c=>!head.includes(c));
-  if(missing.length)return {error:'Missing required column'+(missing.length>1?'s':'')+': '+missing.join(', ')+'. Expected header: '+COLS.join(', ')};
-  const rows=lines.slice(1).filter(l=>l.some(v=>String(v).trim()!=='')).map(l=>{
-    const o={};head.forEach((h,i)=>{if(COLS.includes(h))o[h]=String(l[i]==null?'':l[i]).trim()});return o});
-  if(!rows.length)return {error:'The file has a header but no data rows.'};
-  if(rows.length>500)return {error:'This prototype accepts up to 500 rows per file.'};
-  return {rows}}
+  if(missing.length)return {error:'These columns are missing from the header: '+missing.join(', ')+'.'};
+  const out=rows.slice(1).map((r,i)=>{const o={_line:i+2};COLS.forEach(c=>{o[c]=String(r[head.indexOf(c)]==null?'':r[head.indexOf(c)]).trim()});return o});
+  if(!out.length)return {error:'The file has a header but no data rows.'};
+  if(out.length>500)return {error:'This file has more than 500 rows. Split it and submit in parts.'};
+  return {rows:out}}
 
-const SRC={nppes:'Registry extract (NPPES stand-in)',board:'State licensing board feed',oig:'Exclusion list (OIG LEIE stand-in)',
-  plan:'Plan provider master',file:'Submitted file',tax:'Taxonomy code set'};
-function matchMaster(W,row){
-  const npi=String(row.npi||'');
-  const byNpi=W.master.find(m=>m.npi===npi);
-  if(byNpi)return {rec:byNpi,confidence:100,on:'NPI'};
-  const byName=W.master.find(m=>m.tin===row.tin&&m.name.toLowerCase()===String(row.name||'').toLowerCase());
-  if(byName)return {rec:byName,confidence:72,on:'name and TIN, no NPI match'};
-  const sur=String(row.name||'').split(' ').pop().toLowerCase();
-  const bySur=W.master.find(m=>m.tin===row.tin&&m.name.toLowerCase().endsWith(sur)&&sur.length>2);
-  if(bySur)return {rec:bySur,confidence:55,on:'surname and TIN only'};
-  return {rec:null,confidence:0,on:'no match'}}
-function validateRow(W,row,all,idx){
-  const out=[];
-  const add=(id,sev,label,detail,source,conf,kind)=>out.push({id,sev,label,detail,source,conf,kind:kind||'inferred'});
-  const npi=String(row.npi||'');
-  if(!/^\d{10}$/.test(npi))add('npi_format','error','NPI is not ten digits','Found '+npi.length+' characters. An NPI is exactly ten digits.',SRC.nppes,100,'rule');
-  else if(!npiValid(npi))add('npi_checksum','error','NPI fails its check digit','The Luhn check over the 80840 prefix does not match. One digit is usually transposed.',SRC.nppes,100,'rule');
-  else if(!W.nppes[npi])add('npi_unknown','warning','NPI is not in the registry extract','No matching record. The registry carries a reporting lag, so a recent enumeration may legitimately be absent.',SRC.nppes,70,'inferred');
-  if(!/^\d{9}$/.test(String(row.tin||'')))add('tin_format','error','TIN is not nine digits','Employer identification numbers are nine digits.',SRC.file,100,'rule');
-  const lic=W.licences[npi];
-  if(lic&&lic.status!=='Active')add('licence','error','Licence status is '+lic.status.toLowerCase(),'The board feed reports this licence as '+lic.status.toLowerCase()+'. A clinician without an active licence cannot be listed.',SRC.board,95,'inferred');
-  if(W.oig.has(npi))add('oig','error','Appears on the exclusion list','Listed in the exclusion extract. Exclusion blocks participation and must be resolved before listing.',SRC.oig,99,'inferred');
-  if(!TAXONOMY[row.taxonomy])add('taxonomy','error','Taxonomy code is not recognised','"'+(row.taxonomy||'blank')+'" is not in the code set this plan accepts.',SRC.tax,100,'rule');
-  if(!PANEL.includes(row.panelStatus))add('panel','warning','Panel status is not a recognised value','Expected one of: '+PANEL.join(', ')+'.',SRC.file,100,'rule');
-  if(!isoOk(row.effectiveDate))add('eff_format','error','Effective date is not a valid date','Use YYYY-MM-DD.',SRC.file,100,'rule');
-  else if(toDay(row.effectiveDate)>ASOF)add('eff_future','warning','Effective date is in the future','Dated '+row.effectiveDate+'. The listing will not publish until that date.',SRC.file,100,'rule');
-  if(row.terminationDate){
-    if(!isoOk(row.terminationDate))add('term_format','error','Termination date is not a valid date','Use YYYY-MM-DD, or leave it blank.',SRC.file,100,'rule');
-    else if(isoOk(row.effectiveDate)&&toDay(row.terminationDate)<toDay(row.effectiveDate))add('term_order','error','Termination precedes the effective date','Termination '+row.terminationDate+' is earlier than effective '+row.effectiveDate+'.',SRC.file,100,'rule');
-    else if(toDay(row.terminationDate)<ASOF)add('term_past','warning','Termination date has already passed','Dated '+row.terminationDate+'. This row will be treated as a removal from the directory.',SRC.file,100,'rule');
-  }
-  if(!phoneOk(row.phone))add('phone','warning','Telephone is not ten digits','Found "'+(row.phone||'blank')+'".',SRC.file,100,'rule');
-  const dup=all.findIndex((x,i)=>i!==idx&&String(x.npi)===npi&&x.locationName===row.locationName);
-  if(dup>-1&&dup<idx)add('dup','warning','Duplicate of row '+(dup+1),'The same NPI and location appear earlier in this file. Only one will be applied.',SRC.file,100,'rule');
-  const subKey=Object.keys(W.locations).find(k=>W.master.some(m=>m.tin===row.tin&&m.sub===k));
-  const known=subKey?W.locations[subKey]:[];
-  if(known.length&&!known.some(l=>l.name===row.locationName))
-    add('loc','warning','Location is not on file for this TIN','"'+row.locationName+'" is not among the locations the plan holds for this tax identification number. A new site needs a contracting check.',SRC.plan,85,'inferred');
-  const m=matchMaster(W,row);
-  if(m.rec&&m.confidence<DEF.matchMin)
-    add('match','warning','Weak identity match ('+m.confidence+'%)','Matched on '+m.on+'. Below the '+DEF.matchMin+'% threshold, so this may be a different clinician.',SRC.plan,m.confidence,'inferred');
-  const sev=out.some(c=>c.sev==='error')?'error':out.some(c=>c.sev==='warning')?'warning':'clean';
-  return {checks:out,sev,match:m}}
-function validateFile(W,rows){
-  const res=rows.map((r,i)=>Object.assign({row:r,i},validateRow(W,r,rows,i)));
-  const errors=res.filter(x=>x.sev==='error').length, warnings=res.filter(x=>x.sev==='warning').length;
-  return {res,errors,warnings,clean:res.length-errors-warnings,
-    firstPass:res.length?(res.length-errors-warnings)/res.length*100:0}}
-
-function diffFile(W,validated,subId){
-  const mineMaster=W.master.filter(m=>m.sub===subId);
-  const seen=new Set(), out=[];
-  validated.res.forEach(v=>{
-    if(v.sev==='error')return;
-    const m=v.match.rec;
-    if(!m){out.push({kind:'new',v,fields:[]});return}
-    seen.add(m.npi+'|'+m.locationName);
-    const fields=[];
-    FIELDS.forEach(f=>{
-      const nv=String(v.row[f]==null?'':v.row[f]).trim(), ov=String(m[f]==null?'':m[f]).trim();
-      if(nv&&nv!==ov)fields.push({field:f,from:ov,to:nv})});
-    if(v.row.terminationDate&&isoOk(v.row.terminationDate)&&toDay(v.row.terminationDate)<=ASOF)
-      out.push({kind:'terminate',v,rec:m,fields});
-    else out.push({kind:fields.length?'changed':'unchanged',v,rec:m,fields});
+/* ---------- generation ---------- */
+function generate(){
+  const r=mulberry32(SEED), ri=(a,b)=>a+Math.floor(r()*(b-a+1)), pick=a=>a[Math.floor(r()*a.length)];
+  const submitters=[],locations=[],registry=[],plan=[],exclusions=[],licences={};
+  PRACTICES.forEach((nm,i)=>{
+    const st=STATES[i%STATES.length];
+    const sub={id:'SUB-'+pad(i+1,2),name:nm,tin:String(ri(100000000,999999999)),state:st,
+      kind:i===0?'independent practice':i<3?'delegated entity':i<7?'large group':'independent practice',
+      channel:i%3===0?'portal':i%3===1?'email':'sftp'};
+    submitters.push(sub);
+    const n=i===0?3:ri(1,3);
+    for(let j=1;j<=n;j++)locations.push({id:sub.id+'-L'+j,sub:sub.id,
+      name:`${TOWN[(i+j)%TOWN.length]} ${['Clinic','Office','Center'][j-1]||'Site'}`,
+      addr:`${ri(10,9899)} ${pick(STREET)} ${pick(['St','Ave','Blvd'])}, ${TOWN[(i+j)%TOWN.length]} ${st}`,
+      phone:fmtPhone(String(ri(201,989))+'555'+pad(ri(0,9999),4))});
   });
-  mineMaster.forEach(m=>{if(!seen.has(m.npi+'|'+m.locationName))out.push({kind:'absent',rec:m,fields:[]})});
-  return out}
-const diffCounts=d=>d.reduce((o,x)=>{o[x.kind]=(o[x.kind]||0)+1;return o},{new:0,changed:0,unchanged:0,terminate:0,absent:0});
+  let pn=0;
+  submitters.forEach((sub,si)=>{
+    const locs=locations.filter(l=>l.sub===sub.id);
+    const count=si===0?18:ri(16,34);
+    for(let k=0;k<count;k++){
+      pn++;
+      let npi=npiMake(String(ri(100000000,999999999)));
+      const tax=pick(TAX_CODES);
+      const prov={npi,first:pick(FIRST),last:pick(LAST),taxonomy:tax,sub:sub.id};
+      registry.push({npi,first:prov.first,last:prov.last,taxonomy:tax,
+        addr:locs[0].addr,updated:fromDay(ASOF-ri(30,900))});
+      licences[npi]={state:sub.state,expires:fromDay(ASOF+(r()<0.06?-ri(5,300):ri(20,900)))};
+      if(r()<0.012)exclusions.push(npi);
+      const chosen=locs.filter(()=>r()<0.62);
+      (chosen.length?chosen:[locs[0]]).forEach(l=>{
+        const age=r()<0.5?ri(3,88):ri(91,320);
+        plan.push({id:'LS-'+pad(plan.length+1,4),npi,sub:sub.id,loc:l.id,
+          first:prov.first,last:prov.last,taxonomy:tax,tin:sub.tin,
+          address:l.addr,phone:l.phone,panel_status:pick(PANEL),
+          effective_date:fromDay(ASOF-ri(200,1400)),termination_date:'',
+          lastV:fromDay(ASOF-age),basis:r()<0.4?'attested':r()<0.7?'inferred':'carried',
+          status:'listed'});
+      });
+    }
+  });
+  return {submitters,locations,registry,licences,exclusions,plan}}
+
+/* ---------- validation ---------- */
+function validateRow(S,row,allRows,sub){
+  const f=[];const add=(k,extra)=>f.push(Object.assign({key:k},RULES[k],extra||{}));
+  const npi=String(row.npi||'').trim();
+  if(!npiValid(npi))add('npi_format');
+  const reg=S.registry.find(x=>x.npi===npi);
+  if(npiValid(npi)&&!reg)add('npi_unknown');
+  if(reg){
+    if(norm(reg.first)!==norm(row.first_name)||norm(reg.last)!==norm(row.last_name))
+      add('name_mismatch',{detail:`file says ${row.first_name} ${row.last_name}, registry says ${reg.first} ${reg.last}`});
+    if(row.taxonomy&&reg.taxonomy!==row.taxonomy&&TAXONOMY[row.taxonomy])
+      add('taxonomy_mismatch',{detail:`file says ${TAXONOMY[row.taxonomy]}, registry says ${TAXONOMY[reg.taxonomy]}`});
+  }
+  if(!TAXONOMY[row.taxonomy])add('taxonomy_unknown',{detail:`"${row.taxonomy}" is not in the code set`});
+  const lic=S.licences[npi];
+  if(lic){const d=toDay(lic.expires);
+    if(d<ASOF)add('license_expired',{detail:`expired ${lic.expires}`});
+    else if(d-ASOF<=60)add('license_lapsing',{detail:`expires ${lic.expires}`});}
+  if(S.exclusions.includes(npi))add('exclusion',{detail:'this row cannot be accepted'});
+  if(allRows.filter(x=>String(x.npi).trim()===npi&&x.location_id===row.location_id).length>1)
+    add('dup_in_file');
+  const other=S.plan.find(p=>p.npi===npi&&(norm(p.first)!==norm(row.first_name)||norm(p.last)!==norm(row.last_name)));
+  if(other&&!reg)add('entity_ambiguous',{detail:`the plan record holds this NPI as ${other.first} ${other.last}`});
+  const loc=S.locations.find(l=>l.id===row.location_id&&l.sub===sub.id);
+  if(!loc)add('location_unknown',{detail:`"${row.location_id}" is not contracted for ${sub.name}`});
+  else if(norm(loc.addr)!==norm(row.address))add('address_mismatch',{detail:`plan record: ${loc.addr}`});
+  if(!/^\d{9}$/.test(String(row.tin).replace(/\D/g,'')))add('tin_format');
+  if(!phoneOk(row.phone))add('phone_format');
+  if(!PANEL.includes(row.panel_status))add('panel_invalid',{detail:`accepted values: ${PANEL.join(', ')}`});
+  if(!isDate(row.effective_date))add('eff_missing');
+  if(isDate(row.effective_date)&&toDay(row.effective_date)>ASOF)add('eff_future');
+  if(row.termination_date){
+    if(!isDate(row.termination_date))add('term_before_eff',{detail:'termination date is not a valid date'});
+    else{
+      if(isDate(row.effective_date)&&toDay(row.termination_date)<toDay(row.effective_date))add('term_before_eff');
+      else if(toDay(row.termination_date)<=ASOF)add('term_past');
+    }
+  }
+  const errors=f.filter(x=>x.sev==='error').length, warnings=f.filter(x=>x.sev==='warning').length;
+  return {findings:f,errors,warnings,clean:errors===0&&warnings===0}}
+
+function diffRow(S,row){
+  const existing=S.plan.find(p=>p.npi===String(row.npi).trim()&&p.loc===row.location_id&&p.status==='listed');
+  if(!existing)return {kind:'add',fields:[],existing:null};
+  const fields=[];
+  [['first','first_name'],['last','last_name'],['taxonomy','taxonomy'],['tin','tin'],['address','address'],['phone','phone'],['panel_status','panel_status'],['effective_date','effective_date']].forEach(([a,b])=>{
+    const was=String(existing[a]||''),now=String(row[b]||'');
+    if(norm(was)!==norm(now))fields.push({field:b,was,now})});
+  if(row.termination_date&&isDate(row.termination_date)&&toDay(row.termination_date)<=ASOF)
+    return {kind:'terminate',fields,existing};
+  return {kind:fields.length?'change':'same',fields,existing}}
+
+function buildSubmission(S,sub,rows,channel){
+  const items=rows.map(r=>{const v=validateRow(S,r,rows,sub);const d=diffRow(S,r);
+    return {row:r,v,d,decision:null,note:''}});
+  const errors=items.filter(i=>i.v.errors>0).length;
+  return {id:'SB-'+pad(S.submissions.length+1,3),sub:sub.id,channel,created:Date.now(),
+    status:'draft',items,rows:rows.length,errorRows:errors,
+    firstPassClean:items.filter(i=>i.v.clean).length,submittedAt:null,decidedAt:null,attestedBy:null}}
+
+function submitSubmission(S,sb,who){
+  if(sb.items.some(i=>i.v.errors>0))return {ok:false,error:'Fix every blocking error before submitting.'};
+  sb.status='submitted';sb.submittedAt=Date.now();sb.attestedBy=who;
+  S.audit.push({t:Date.now(),sb:sb.id,who,action:'attested and submitted',
+    detail:`${sb.rows} rows, ${sb.items.filter(i=>i.d.kind!=='same').length} changes`});
+  return {ok:true}}
+
+function decideItem(S,sb,idx,decision,note){
+  const it=sb.items[idx];
+  if(decision==='reject'&&!String(note||'').trim())return {ok:false,error:'A rejection needs a reason the practice can act on.'};
+  it.decision=decision;it.note=String(note||'').trim();
+  return {ok:true}}
+
+function finaliseSubmission(S,sb,who){
+  const undecided=sb.items.filter(i=>i.decision===null).length;
+  if(undecided)return {ok:false,error:`${undecided} row${undecided>1?'s have':' has'} no decision yet.`};
+  let applied=0,rejected=0;
+  sb.items.forEach(it=>{
+    if(it.decision!=='approve'){rejected++;return}
+    const r=it.row,d=it.d;
+    if(d.kind==='terminate'&&d.existing){d.existing.status='terminated';d.existing.termination_date=r.termination_date;
+      emit(S,'provider.location.terminated',{npi:r.npi,location:r.location_id,effective:r.termination_date})}
+    else if(d.kind==='add'){
+      S.plan.push({id:'LS-'+pad(S.plan.length+1,4),npi:String(r.npi).trim(),sub:sb.sub,loc:r.location_id,
+        first:r.first_name,last:r.last_name,taxonomy:r.taxonomy,tin:r.tin,address:r.address,phone:r.phone,
+        panel_status:r.panel_status,effective_date:r.effective_date,termination_date:'',
+        lastV:ASOF_ISO,basis:'attested',status:'listed'});
+      emit(S,'provider.location.added',{npi:r.npi,location:r.location_id,taxonomy:r.taxonomy})}
+    else{const e=d.existing;
+      if(e){Object.assign(e,{first:r.first_name,last:r.last_name,taxonomy:r.taxonomy,tin:r.tin,
+        address:r.address,phone:r.phone,panel_status:r.panel_status,effective_date:r.effective_date,
+        lastV:ASOF_ISO,basis:'attested'});
+        if(d.kind==='change')emit(S,'provider.record.updated',{npi:r.npi,location:r.location_id,fields:d.fields.map(f=>f.field)});
+        else emit(S,'provider.record.attested',{npi:r.npi,location:r.location_id})}}
+    applied++});
+  sb.status='completed';sb.decidedAt=Date.now();
+  S.audit.push({t:Date.now(),sb:sb.id,who,action:'review completed',detail:`${applied} approved, ${rejected} rejected`});
+  S.turnarounds.push({sb:sb.id,hours:(sb.decidedAt-sb.submittedAt)/36e5});
+  return {ok:true,applied,rejected}}
 
 function emit(S,type,payload){
-  S.events.push({t:Date.now(),seq:S.events.length+1,type,payload,
-    consumers:({'provider.added':['directory','claims','network-adequacy'],
-      'provider.terminated':['directory','claims','prior-auth','care-coordination'],
-      'directory.listing.updated':['directory','claims'],
-      'roster.submission.applied':['audit-warehouse']})[type]||['directory']})}
-function submit(S,subId,validated,diff,note){
-  const errs=validated.res.filter(x=>x.sev==='error').length;
-  if(errs)return {ok:false,error:'Fix the '+errs+' blocking error'+(errs>1?'s':'')+' before submitting. Warnings may be submitted with an attestation.'};
-  if(!note||!String(note).trim())return {ok:false,error:'Confirm the attestation before submitting.'};
-  const version=S.submissions.filter(s=>s.sub===subId).length+1;
-  const id='SUB-'+pad(S.submissions.length+1,3);
-  const rows=diff.filter(d=>d.kind!=='unchanged'&&d.kind!=='absent').map((d,i)=>({
-    k:id+'|'+pad(i+1,3),kind:d.kind,npi:d.v?d.v.row.npi:d.rec.npi,name:d.v?d.v.row.name:d.rec.name,
-    locationName:d.v?d.v.row.locationName:d.rec.locationName,fields:d.fields,
-    warnings:d.v?d.v.checks.filter(c=>c.sev==='warning').length:0,decision:null,reason:''}));
-  const s={id,sub:subId,version,at:Date.now(),rows,status:rows.length?'pending':'applied',
-    counts:diffCounts(diff),firstPass:validated.firstPass,note:String(note).trim(),decidedAt:null};
-  S.submissions.push(s);
-  S.audit.push({t:Date.now(),actor:'Submitter',sub:subId,ref:id,action:'submitted',
-    detail:'Version '+version+': '+rows.length+' rows for review, first-pass validation '+validated.firstPass.toFixed(1)+'%'});
-  return {ok:true,submission:s}}
-function decideRow(S,rowKey,decision,reason){
-  const s=S.submissions.find(x=>x.id===String(rowKey).split('|')[0]);
-  if(!s)return {ok:false,error:'Submission not found.'};
-  const r=s.rows.find(x=>x.k===rowKey);
-  if(!r)return {ok:false,error:'Row not found.'};
-  if(decision==='reject'&&!String(reason||'').trim())return {ok:false,error:'A rejection needs a reason.'};
-  r.decision=decision;r.reason=String(reason||'').trim();
-  return {ok:true}}
-function applySubmission(S,W,subId){
-  const s=S.submissions.find(x=>x.id===subId);
-  if(!s)return {ok:false,error:'Submission not found.'};
-  const undecided=s.rows.filter(r=>!r.decision).length;
-  if(undecided)return {ok:false,error:undecided+' row'+(undecided>1?'s':'')+' still need a decision.'};
-  let applied=0;const now=Date.now();
-  s.rows.forEach(r=>{
-    if(r.decision!=='approve')return;
-    applied++;
-    if(r.kind==='new'){
-      const base=W.master.find(m=>m.sub===s.sub)||{};
-      W.master.push({npi:r.npi,name:r.name,tin:base.tin,sub:s.sub,org:base.org,
-        locationId:'new',locationName:r.locationName,address:'',phone:'',taxonomy:'',panelStatus:'Open',
-        effectiveDate:ASOF_ISO,terminationDate:'',lastAttested:ASOF_ISO,basis:'attested',
-        freshness:FIELDS.reduce((o,f)=>{o[f]=ASOF_ISO;return o},{})});
-      emit(S,'provider.added',{npi:r.npi,location:r.locationName});
-    }else{
-      const m=W.master.find(x=>x.npi===r.npi&&x.locationName===r.locationName);
-      if(m){
-        if(r.kind==='terminate'){m.terminationDate=ASOF_ISO;emit(S,'provider.terminated',{npi:r.npi,location:r.locationName})}
-        r.fields.forEach(f=>{m[f.field]=f.to;m.freshness[f.field]=ASOF_ISO});
-        m.lastAttested=ASOF_ISO;m.basis='attested';
-        if(r.kind!=='terminate')emit(S,'directory.listing.updated',{npi:r.npi,location:r.locationName,fields:r.fields.map(f=>f.field)});
-      }
-    }
-  });
-  s.status='applied';s.decidedAt=now;
-  S.turnarounds.push((now-s.at)/36e5);
-  S.audit.push({t:now,actor:S.ui.actor||'Provider data ops',sub:s.sub,ref:s.id,action:'applied',
-    detail:applied+' of '+s.rows.length+' rows approved and written to the provider master'});
-  emit(S,'roster.submission.applied',{submission:s.id,approved:applied,rejected:s.rows.length-applied});
-  return {ok:true,applied}}
+  S.events.push({seq:S.events.length+1,t:Date.now(),type,payload,
+    endpoints:['claims','directory','prior-auth','care-coordination']})}
 
-function liveMaster(W){return W.master.filter(m=>!m.terminationDate||toDay(m.terminationDate)>ASOF)}
-function kpis(S,W){
-  const live=liveMaster(W);
-  const attested=live.filter(m=>m.basis==='attested').length;
-  const inCycle=live.filter(m=>ASOF-toDay(m.lastAttested)<=S.set.cycle).length;
-  const fp=S.submissions.length?S.submissions.reduce((t,s)=>t+s.firstPass,0)/S.submissions.length:null;
-  const ta=S.turnarounds.length?S.turnarounds.reduce((a,b)=>a+b,0)/S.turnarounds.length:null;
-  const act=S.submissions.length?new Set(S.submissions.map(s=>s.sub)).size/SUBMITTERS.length*100:0;
-  const T=S.set.thresholds;
-  const inPct=live.length?inCycle/live.length*100:0, atPct=live.length?attested/live.length*100:0;
-  return [
-    {k:'accuracy',label:'Attested within cycle',value:inPct,fmt:'pct',
-      definition:'Live listings whose last attestation falls inside the '+S.set.cycle+'-day cycle, divided by live listings.',
-      source:'Plan provider master',owner:'Compliance',threshold:T.accuracy+'% or above',pass:inPct>=T.accuracy,
-      action:'Below threshold: schedule outreach against the oldest attestations first.'},
-    {k:'attested',label:'Attested share',value:atPct,fmt:'pct',
-      definition:'Live listings whose current basis is a submitter attestation rather than an inference or a carried-over file.',
-      source:'Plan provider master',owner:'Provider data ops',threshold:T.attested+'% or above',pass:atPct>=T.attested,
-      action:'Below threshold: the directory rests on inference. Prioritise attestation outreach.'},
-    {k:'firstPass',label:'First-pass validation',value:fp,fmt:'pct',
-      definition:'Submitted rows passing every validation with no error and no warning, averaged across submissions.',
-      source:'Validation engine',owner:'Provider data ops',threshold:T.firstPass+'% or above',pass:fp===null?null:fp>=T.firstPass,
-      action:'Below threshold: the commonest failing check tells you which submitter guidance to fix.'},
-    {k:'turnaround',label:'Mean turnaround',value:ta,fmt:'hours',
-      definition:'Hours from submission to the decision being written to the provider master.',
-      source:'Submission log',owner:'Provider data ops',threshold:'Under '+T.turnaroundH+' hours',pass:ta===null?null:ta<=T.turnaroundH,
-      action:'Above threshold: the review queue is the bottleneck, not the submitter.'},
-    {k:'activation',label:'Submitter activation',value:act,fmt:'pct',
-      definition:'Submitting organisations that have filed at least one roster, divided by organisations invited.',
-      source:'Submission log',owner:'Post-sales',threshold:T.activation+'% or above',pass:act>=T.activation,
-      action:'Below threshold: the named owner for each organisation should make contact this week.'},
-    {k:'events',label:'Downstream events',value:S.events.length,fmt:'int',
-      definition:'Typed events emitted to subscribing systems since the last reset.',
-      source:'Event feed',owner:'IT integration',threshold:'No failed deliveries',pass:true,
-      action:'Confirm every consumer acknowledged the latest sequence number.'}]}
-function freshness(W,S){
-  const live=liveMaster(W);
-  return FIELDS.map(f=>{
-    const ages=live.map(m=>ASOF-toDay(m.freshness[f])).sort((a,b)=>a-b);
-    const med=ages.length?(ages.length%2?ages[(ages.length-1)/2]:(ages[ages.length/2-1]+ages[ages.length/2])/2):0;
-    const stale=ages.filter(a=>a>S.set.thresholds.freshnessDays).length;
-    return {field:f,label:FIELD_LABEL[f],median:med,stalePct:ages.length?stale/ages.length*100:0}})}
+/* ---------- sample files ---------- */
+function sampleFile(S,kind){
+  const sub=S.submitters.find(s=>s.id===FOCAL);
+  const locs=S.locations.filter(l=>l.sub===sub.id);
+  const mine=S.plan.filter(p=>p.sub===sub.id&&p.status==='listed');
+  const head=COLS.join(',');
+  const line=o=>COLS.map(c=>{const v=String(o[c]==null?'':o[c]);return /[",\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v}).join(',');
+  const base=p=>({npi:p.npi,first_name:p.first,last_name:p.last,taxonomy:p.taxonomy,tin:p.tin,
+    location_id:p.loc,address:p.address,phone:p.phone,panel_status:p.panel_status,
+    effective_date:p.effective_date,termination_date:''});
+  let rows=mine.map(base);
+  if(kind==='clean')return [head].concat(rows.map(line)).join('\n');
+  if(kind==='errors'){
+    rows=rows.map(o=>Object.assign({},o));
+    if(rows[0])rows[0].npi=String(rows[0].npi).slice(0,9)+((Number(String(rows[0].npi).slice(-1))+1)%10);
+    if(rows[1])rows[1].taxonomy='999ZZ0000X';
+    if(rows[2])rows[2].panel_status='maybe';
+    if(rows[3])rows[3].phone='555-12';
+    if(rows[4])rows[4].location_id=sub.id+'-L9';
+    if(rows[5])rows[5].termination_date='2024-01-01';
+    if(rows[6])rows[6].tin='12345';
+    if(rows[7]){rows[7].first_name='Alex';rows[7].address='12 Unknown Rd, Elsewhere '+sub.state}
+    if(rows[8])rows.push(Object.assign({},rows[8]));
+    if(rows[9])rows[9].termination_date=fromDay(ASOF-9);
+    return [head].concat(rows.map(line)).join('\n');
+  }
+  if(kind==='changes'){
+    rows=rows.map(o=>Object.assign({},o));
+    if(rows[0])rows[0].phone=fmtPhone('2065550147');
+    if(rows[1])rows[1].panel_status='not_accepting';
+    if(rows[2])rows[2].termination_date=fromDay(ASOF-5);
+    if(rows[3])rows[3].address=locs[0].addr;
+    const reg=S.registry.find(x=>!mine.some(p=>p.npi===x.npi));
+    if(reg&&locs[0])rows.push({npi:reg.npi,first_name:reg.first,last_name:reg.last,taxonomy:reg.taxonomy,
+      tin:sub.tin,location_id:locs[0].id,address:locs[0].addr,phone:locs[0].phone,
+      panel_status:'accepting',effective_date:fromDay(ASOF-14),termination_date:''});
+    return [head].concat(rows.map(line)).join('\n');
+  }
+  return [head].concat(rows.map(line)).join('\n')}
 
-/* =====================================================================
-   SELF-TESTS
-   ===================================================================== */
-function cleanRowsFor(S,id){const all=S.rosters[id];return all.filter((r,i)=>validateRow(S.world,r,all,i).sev!=='error')}
+/* ---------- metrics ---------- */
+const listedPlan=S=>S.plan.filter(p=>p.status==='listed');
+function median(a){if(!a.length)return null;const s=[...a].sort((x,y)=>x-y);const m=Math.floor(s.length/2);
+  return s.length%2?s[m]:(s[m-1]+s[m])/2}
+function metrics(S){
+  const rows=listedPlan(S);
+  const attested=rows.filter(p=>p.basis==='attested').length;
+  const inCycle=rows.filter(p=>p.lastV&&ASOF-toDay(p.lastV)<=90).length;
+  const done=S.submissions.filter(s=>s.status==='completed');
+  const allItems=S.submissions.filter(s=>s.status!=='draft').reduce((t,s)=>t+s.rows,0);
+  const cleanItems=S.submissions.filter(s=>s.status!=='draft').reduce((t,s)=>t+s.firstPassClean,0);
+  const viaPortal=S.submissions.filter(s=>s.status!=='draft'&&s.channel==='portal').length;
+  const subsDone=S.submissions.filter(s=>s.status!=='draft').length;
+  return {n:rows.length,attested,attestedPct:rows.length?attested/rows.length*100:0,
+    inCycle,inCyclePct:rows.length?inCycle/rows.length*100:0,
+    firstPass:allItems?cleanItems/allItems*100:null,
+    turnaround:median(S.turnarounds.map(t=>t.hours)),
+    submissions:subsDone,completed:done.length,
+    portalShare:subsDone?viaPortal/subsDone*100:null,
+    events:S.events.length,
+    activated:new Set(S.submissions.filter(s=>s.status!=='draft').map(s=>s.sub)).size,
+    activationPct:new Set(S.submissions.filter(s=>s.status!=='draft').map(s=>s.sub)).size/S.submitters.length*100}}
+const KPIDEF={
+  firstPass:{name:'First-pass validation rate',def:'Rows with no error and no warning on first upload, divided by rows uploaded.',src:'Computed from submissions in this session.',owner:'Provider data operations',thr:'Target 85% or better. Assumption until benchmarked.'},
+  turnaround:{name:'Median roster turnaround',def:'Hours from provider submission to the plan completing its review.',src:'Computed from completed submissions.',owner:'Provider data operations',thr:'Target under 24 hours, against a baseline measured in days. Assumption until benchmarked.'},
+  attested:{name:'Provider-attested share',def:'Listings whose current values were confirmed by the submitting organisation, divided by active listings.',src:'Plan record, basis field.',owner:'Network management',thr:'Rising trend. No regulatory threshold.'},
+  inCycle:{name:'Verified within 90 days',def:'Active listings last verified within 90 days, divided by active listings.',src:'Plan record, last-verified field.',owner:'Compliance',thr:'No Surprises Act requires verification at least every 90 days.'},
+  activation:{name:'Submitter activation',def:'Distinct submitting organisations that have sent at least one submission, divided by contracted organisations.',src:'Computed from submissions.',owner:'Go-to-market and post-sales',thr:'Pilot target 60% of invited organisations. Assumption.'},
+  portal:{name:'Share submitted through the layer',def:'Submissions received through the validation layer, divided by all submissions recorded.',src:'Computed from submissions.',owner:'Provider data operations',thr:'Rising share, with email and SFTP falling. Assumption.'},
+};
+
+/* ---------- self tests ---------- */
 function runTests(){
   const R=[];const T=(id,name,fn)=>{let ok=false,msg='';try{const v=fn();ok=v===true;msg=ok?'':String(v)}catch(e){msg=e.message}R.push({id,name,ok,msg})};
-  const S0=freshState();const W0=S0.world;const sample=S0.rosters['SUB-IND'];
-  T('T1','World builds: three submitter types, master populated, reference sets present',()=>
-    SUBMITTERS.length===3 && W0.master.length>=130 && Object.keys(W0.nppes).length>0 && W0.oig instanceof Set);
-  T('T2','Generator is deterministic for the seed',()=>
-    JSON.stringify(buildWorld().master)===JSON.stringify(buildWorld().master));
-  T('T3','CSV round-trips: serialise then parse returns the same rows',()=>{
-    const p=parseCSV(toCSV(sample));return !p.error && p.rows.length===sample.length && p.rows[0].npi===String(sample[0].npi)});
-  T('T4','CSV parser rejects a missing required column',()=>{
-    const bad=toCSV(sample).split('\n');bad[0]=bad[0].replace('taxonomy,','');
-    return /Missing required column/.test(parseCSV(bad.join('\n')).error||'')});
-  T('T5','CSV parser rejects an empty file and a header-only file',()=>
-    !!parseCSV('').error && /no data rows/.test((parseCSV(COLS.join(','))||{}).error||''));
-  T('T6','CSV parser handles quoted fields containing commas',()=>{
-    const t=COLS.join(',')+'\n1234567893,"Rao, Aisha",431902887,A,"1 Oak St, Salem",(201) 555-0100,207R00000X,Open,2026-01-01,';
-    const p=parseCSV(t);return !p.error&&p.rows[0].name==='Rao, Aisha'&&p.rows[0].address==='1 Oak St, Salem'});
-  T('T7','NPI check digit accepts a valid NPI and rejects a transposed one',()=>
-    npiValid('1234567893')&&!npiValid('1234567890')&&!npiValid('12345'));
-  T('T8','A broken NPI checksum is an error, not a warning',()=>{
-    const r=Object.assign({},sample[0],{npi:String(sample[0].npi).slice(0,9)+((Number(String(sample[0].npi).slice(-1))+1)%10)});
-    const v=validateRow(W0,r,[r],0);return v.sev==='error'&&v.checks.some(c=>c.id==='npi_checksum')});
+  const S0=freshState();
+  const sub=S0.submitters.find(s=>s.id===FOCAL);
+  const load=kind=>{const r=rowsToObjects(parseCSV(sampleFile(S0,kind)));if(r.error)throw new Error(r.error);return r.rows};
+  T('T1','Dataset builds: 12 submitters, locations, registry, plan record',()=>
+    S0.submitters.length===12&&S0.locations.length>=12&&S0.registry.length>=250&&S0.plan.length>=300);
+  T('T2','Generator is deterministic for the seed',()=>JSON.stringify(generate())===JSON.stringify(generate()));
+  T('T3','CSV parser handles quoted fields containing commas',()=>{
+    const r=parseCSV('a,b\n"x, y",z');return r[1][0]==='x, y'&&r[1][1]==='z'});
+  T('T4','A header missing a required column is rejected by name',()=>{
+    const r=rowsToObjects(parseCSV('npi,first_name\n123,Ann'));
+    return !!r.error&&r.error.includes('last_name')});
+  T('T5','A file with a header but no rows is rejected',()=>!!rowsToObjects(parseCSV(COLS.join(','))).error);
+  T('T6','The clean sample file validates with zero errors',()=>{
+    const rows=load('clean');return rows.every(r=>validateRow(S0,r,rows,sub).errors===0)});
+  T('T7','The clean sample file produces no changes against the plan record',()=>{
+    const rows=load('clean');return rows.every(r=>diffRow(S0,r).kind==='same')});
+  T('T8','NPI check digit: a corrupted NPI raises npi_format',()=>{
+    const rows=load('errors');
+    return validateRow(S0,rows[0],rows,sub).findings.some(f=>f.key==='npi_format')});
   T('T9','An unrecognised taxonomy code is an error',()=>{
-    const r=Object.assign({},sample[0],{taxonomy:'ZZZ'});
-    return validateRow(W0,r,[r],0).checks.some(c=>c.id==='taxonomy'&&c.sev==='error')});
-  T('T10','Termination before effective is an error',()=>{
-    const r=Object.assign({},sample[0],{effectiveDate:'2026-05-01',terminationDate:'2026-01-01'});
-    return validateRow(W0,r,[r],0).checks.some(c=>c.id==='term_order'&&c.sev==='error')});
-  T('T11','A future effective date is a warning, not a block',()=>{
-    const r=Object.assign({},sample[0],{npi:'1234567893',tin:'431902887',taxonomy:'207R00000X',panelStatus:'Open',
-      phone:'(201) 555-0100',effectiveDate:'2027-03-15',terminationDate:''});
-    const v=validateRow(W0,r,[r],0);
-    return v.checks.some(c=>c.id==='eff_future'&&c.sev==='warning')&&v.sev==='warning'});
-  T('T12','Every check carries a label, detail, source, confidence and kind',()=>{
-    const v=validateFile(W0,sample);
-    return v.res.every(x=>x.checks.every(c=>!!c.label&&!!c.detail&&!!c.source&&typeof c.conf==='number'&&!!c.kind))});
-  T('T13','Checks are labelled rule or inferred, never blended',()=>{
-    const v=validateFile(W0,sample);
-    return v.res.every(x=>x.checks.every(c=>c.kind==='rule'||c.kind==='inferred'))});
-  T('T14','A duplicate NPI and location pair is flagged against the earlier row',()=>{
-    const a=Object.assign({},sample[0]);const rows=[a,Object.assign({},a)];
-    return validateRow(W0,rows[1],rows,1).checks.some(c=>c.id==='dup')});
-  T('T15','An exclusion-list hit is an error',()=>{
-    const ex=[...W0.oig][0];if(!ex)return 'no exclusion in the synthetic set';
-    const r=Object.assign({},sample[0],{npi:ex});
-    return validateRow(W0,r,[r],0).checks.some(c=>c.id==='oig'&&c.sev==='error')});
-  T('T16','Identity match is exact on NPI and degrades without it',()=>{
-    const m=W0.master[0];
-    const exact=matchMaster(W0,{npi:m.npi,tin:m.tin,name:m.name});
-    const noNpi=matchMaster(W0,{npi:'0000000000',tin:m.tin,name:m.name});
-    const none=matchMaster(W0,{npi:'0000000000',tin:'000000000',name:'Dr Nobody Xyzzy'});
-    return exact.confidence===100&&noNpi.confidence===72&&none.confidence===0&&none.rec===null});
-  T('T17','First-pass rate equals clean rows over total rows',()=>{
-    const v=validateFile(W0,sample);
-    return Math.abs(v.firstPass-(v.clean/v.res.length*100))<1e-9 && v.clean+v.errors+v.warnings===v.res.length});
-  T('T18','Diff classifies new, changed, unchanged and absent rows',()=>{
-    const v=validateFile(W0,S0.rosters['SUB-GRP']);
-    const d=diffFile(W0,v,'SUB-GRP');const c=diffCounts(d);
-    return c.new>0&&c.changed>0&&c.absent>0&&d.every(x=>['new','changed','unchanged','terminate','absent'].includes(x.kind))});
-  T('T19','A changed row records the old and the new value',()=>{
-    const v=validateFile(W0,S0.rosters['SUB-GRP']);
-    const ch=diffFile(W0,v,'SUB-GRP').find(x=>x.kind==='changed');
-    return !!ch && ch.fields.length>0 && ch.fields.every(f=>'from' in f && 'to' in f && f.from!==f.to)});
-  T('T20','Error rows are excluded from the diff, so bad data cannot reach the master',()=>{
-    const v=validateFile(W0,S0.rosters['SUB-DEL']);
-    const d=diffFile(W0,v,'SUB-DEL');
-    const errNpis=new Set(v.res.filter(x=>x.sev==='error').map(x=>String(x.row.npi)));
-    return d.filter(x=>x.v).every(x=>!errNpis.has(String(x.v.row.npi)))});
-  T('T21','Submission is blocked while a blocking error remains',()=>{
-    const S=freshState();const v=validateFile(S.world,S.rosters['SUB-IND']);
-    if(!v.errors)return 'the sample has no error rows to test with';
-    return submit(S,'SUB-IND',v,diffFile(S.world,v,'SUB-IND'),'yes').ok===false});
-  T('T22','Submission is blocked without the attestation',()=>{
-    const S=freshState();const v=validateFile(S.world,cleanRowsFor(S,'SUB-IND'));
-    return submit(S,'SUB-IND',v,diffFile(S.world,v,'SUB-IND'),'').ok===false});
-  T('T23','A clean submission is accepted, versioned and logged',()=>{
-    const S=freshState();const v=validateFile(S.world,cleanRowsFor(S,'SUB-IND'));
-    const r=submit(S,'SUB-IND',v,diffFile(S.world,v,'SUB-IND'),'attested');
-    return r.ok&&r.submission.version===1&&S.audit.length===1});
-  T('T24','Applying is blocked until every row has a decision',()=>{
-    const S=freshState();const v=validateFile(S.world,cleanRowsFor(S,'SUB-GRP'));
-    const s=submit(S,'SUB-GRP',v,diffFile(S.world,v,'SUB-GRP'),'attested').submission;
-    return applySubmission(S,S.world,s.id).ok===false});
-  T('T25','A rejection needs a reason',()=>{
-    const S=freshState();const v=validateFile(S.world,cleanRowsFor(S,'SUB-GRP'));
-    const s=submit(S,'SUB-GRP',v,diffFile(S.world,v,'SUB-GRP'),'attested').submission;
-    return decideRow(S,s.rows[0].k,'reject','').ok===false
-        && decideRow(S,s.rows[0].k,'reject','Not contracted at that site').ok===true});
-  T('T26','Approving a change writes it through, sets the basis to attested and refreshes that field',()=>{
-    const S=freshState();const v=validateFile(S.world,cleanRowsFor(S,'SUB-GRP'));
-    const s=submit(S,'SUB-GRP',v,diffFile(S.world,v,'SUB-GRP'),'attested').submission;
-    const ch=s.rows.find(r=>r.kind==='changed'&&r.fields.length);
-    if(!ch)return 'no changed row in the sample';
-    s.rows.forEach(r=>{r.decision=r===ch?'approve':'reject';r.reason=r===ch?'':'not this test'});
-    const before=S.world.master.find(m=>m.npi===ch.npi&&m.locationName===ch.locationName)[ch.fields[0].field];
-    const res=applySubmission(S,S.world,s.id);
-    const m=S.world.master.find(x=>x.npi===ch.npi&&x.locationName===ch.locationName);
-    return res.ok && before===ch.fields[0].from && m[ch.fields[0].field]===ch.fields[0].to
-      && m.basis==='attested' && m.freshness[ch.fields[0].field]===ASOF_ISO});
-  T('T27','A rejected row changes nothing in the master',()=>{
-    const S=freshState();const v=validateFile(S.world,cleanRowsFor(S,'SUB-GRP'));
-    const s=submit(S,'SUB-GRP',v,diffFile(S.world,v,'SUB-GRP'),'attested').submission;
-    const ch=s.rows.find(r=>r.kind==='changed'&&r.fields.length);
-    if(!ch)return 'no changed row';
-    const snap=JSON.stringify(S.world.master.find(m=>m.npi===ch.npi&&m.locationName===ch.locationName));
-    s.rows.forEach(r=>{r.decision='reject';r.reason='test'});
-    applySubmission(S,S.world,s.id);
-    return JSON.stringify(S.world.master.find(m=>m.npi===ch.npi&&m.locationName===ch.locationName))===snap});
-  T('T28','Applying emits typed events with named consumers',()=>{
-    const S=freshState();const v=validateFile(S.world,cleanRowsFor(S,'SUB-IND'));
-    const s=submit(S,'SUB-IND',v,diffFile(S.world,v,'SUB-IND'),'attested').submission;
-    s.rows.forEach(r=>{r.decision='approve'});
-    applySubmission(S,S.world,s.id);
-    return S.events.length>0 && S.events.every(e=>!!e.type&&Array.isArray(e.consumers)&&e.consumers.length>0)
-      && S.events.some(e=>e.type==='roster.submission.applied')});
-  T('T29','Every measure carries a definition, source, owner, threshold and next action',()=>{
-    const S=freshState();
-    return kpis(S,S.world).every(k=>!!k.definition&&!!k.source&&!!k.owner&&!!k.threshold&&!!k.action)});
-  T('T30','Turnaround is recorded on apply and reported in hours',()=>{
-    const S=freshState();const v=validateFile(S.world,cleanRowsFor(S,'SUB-IND'));
-    const s=submit(S,'SUB-IND',v,diffFile(S.world,v,'SUB-IND'),'attested').submission;
-    s.rows.forEach(r=>{r.decision='approve'});
-    applySubmission(S,S.world,s.id);
-    return S.turnarounds.length===1 && S.turnarounds[0]>=0
-      && kpis(S,S.world).find(k=>k.k==='turnaround').value!==null});
-  T('T31','Per-field freshness reports a median age and a stale share for every field',()=>{
-    const S=freshState();const f=freshness(S.world,S);
-    return f.length===FIELDS.length && f.every(x=>typeof x.median==='number'&&x.stalePct>=0&&x.stalePct<=100)});
-  T('T32','Business days: Friday to Monday is one',()=>bizDays('2026-11-06','2026-11-09')===1);
+    const rows=load('errors');
+    return validateRow(S0,rows[1],rows,sub).findings.some(f=>f.key==='taxonomy_unknown')});
+  T('T10','An invalid panel status is an error',()=>{
+    const rows=load('errors');
+    return validateRow(S0,rows[2],rows,sub).findings.some(f=>f.key==='panel_invalid')});
+  T('T11','A malformed phone is an error',()=>{
+    const rows=load('errors');
+    return validateRow(S0,rows[3],rows,sub).findings.some(f=>f.key==='phone_format')});
+  T('T12','A location not contracted for this submitter is an error',()=>{
+    const rows=load('errors');
+    return validateRow(S0,rows[4],rows,sub).findings.some(f=>f.key==='location_unknown')});
+  T('T13','A termination date before the effective date is an error',()=>{
+    const rows=load('errors');
+    return validateRow(S0,rows[5],rows,sub).findings.some(f=>f.key==='term_before_eff')});
+  T('T14','A short TIN is an error',()=>{
+    const rows=load('errors');
+    return validateRow(S0,rows[6],rows,sub).findings.some(f=>f.key==='tin_format')});
+  T('T15','A name that differs from the registry is a warning, not a block',()=>{
+    const rows=load('errors');const v=validateRow(S0,rows[7],rows,sub);
+    const f=v.findings.find(x=>x.key==='name_mismatch');return !!f&&f.sev==='warning'});
+  T('T16','A duplicated NPI and location in one file is an error on both rows',()=>{
+    const rows=load('errors');
+    const dups=rows.filter(r=>validateRow(S0,r,rows,sub).findings.some(f=>f.key==='dup_in_file'));
+    return dups.length===2});
+  T('T17','Every finding carries a rule, a source and a confidence',()=>{
+    const rows=load('errors');
+    return rows.every(r=>validateRow(S0,r,rows,sub).findings.every(f=>f.label&&f.src&&f.conf&&f.sev))});
+  T('T18','A past termination date is read as a delisting, not an error',()=>{
+    const rows=load('errors');const v=validateRow(S0,rows[9],rows,sub);
+    return v.findings.some(f=>f.key==='term_past')&&!v.findings.some(f=>f.key==='term_before_eff')});
+  T('T19','Diff detects a changed phone as a change, not an addition',()=>{
+    const rows=load('changes');const d=diffRow(S0,rows[0]);
+    return d.kind==='change'&&d.fields.some(f=>f.field==='phone')});
+  T('T20','Diff detects a provider absent from the plan record as an addition',()=>{
+    const rows=load('changes');return diffRow(S0,rows[rows.length-1]).kind==='add'});
+  T('T21','Submission is blocked while any blocking error remains',()=>{
+    const S=structuredClone(S0);const rows=rowsToObjects(parseCSV(sampleFile(S,'errors'))).rows;
+    const sb=buildSubmission(S,S.submitters[0],rows,'portal');S.submissions.push(sb);
+    return submitSubmission(S,sb,'tester').ok===false});
+  T('T22','A clean submission submits and records who attested',()=>{
+    const S=structuredClone(S0);const rows=rowsToObjects(parseCSV(sampleFile(S,'clean'))).rows;
+    const sb=buildSubmission(S,S.submitters[0],rows,'portal');S.submissions.push(sb);
+    const r=submitSubmission(S,sb,'tester');
+    return r.ok&&sb.status==='submitted'&&sb.attestedBy==='tester'&&S.audit.length===1});
+  T('T23','Review cannot be finalised while a row is undecided',()=>{
+    const S=structuredClone(S0);const rows=rowsToObjects(parseCSV(sampleFile(S,'changes'))).rows;
+    const sb=buildSubmission(S,S.submitters[0],rows,'portal');S.submissions.push(sb);
+    submitSubmission(S,sb,'tester');
+    return finaliseSubmission(S,sb,'reviewer').ok===false});
+  T('T24','A rejection without a reason is refused',()=>{
+    const S=structuredClone(S0);const rows=rowsToObjects(parseCSV(sampleFile(S,'changes'))).rows;
+    const sb=buildSubmission(S,S.submitters[0],rows,'portal');
+    return decideItem(S,sb,0,'reject','   ').ok===false});
+  T('T25','Approving an addition creates that listing and emits an event',()=>{
+    const S=structuredClone(S0);const rows=rowsToObjects(parseCSV(sampleFile(S,'changes'))).rows;
+    const sb=buildSubmission(S,S.submitters[0],rows,'portal');S.submissions.push(sb);
+    submitSubmission(S,sb,'tester');
+    const addIx=sb.items.findIndex(i=>i.d.kind==='add');
+    if(addIx<0)return 'no addition row in the sample';
+    const r0=sb.items[addIx].row;
+    if(listedPlan(S).some(p=>p.npi===String(r0.npi).trim()&&p.loc===r0.location_id))return 'listing already present before approval';
+    sb.items.forEach((it,i)=>decideItem(S,sb,i,'approve',''));
+    const r=finaliseSubmission(S,sb,'reviewer');
+    const made=listedPlan(S).find(p=>p.npi===String(r0.npi).trim()&&p.loc===r0.location_id);
+    return r.ok&&!!made&&made.basis==='attested'&&S.events.some(e=>e.type==='provider.location.added')});
+  T('T26','Approving a termination delists that one listing and emits an event',()=>{
+    const S=structuredClone(S0);const rows=rowsToObjects(parseCSV(sampleFile(S,'changes'))).rows;
+    const sb=buildSubmission(S,S.submitters[0],rows,'portal');S.submissions.push(sb);
+    submitSubmission(S,sb,'tester');
+    const term=sb.items.findIndex(i=>i.d.kind==='terminate');
+    if(term<0)return 'no termination row in the sample';
+    const target=sb.items[term].d.existing;
+    if(target.status!=='listed')return 'target was not listed to begin with';
+    sb.items.forEach((it,i)=>decideItem(S,sb,i,'approve',''));
+    finaliseSubmission(S,sb,'reviewer');
+    return target.status==='terminated'&&!listedPlan(S).includes(target)&&S.events.some(e=>e.type==='provider.location.terminated')});
+  T('T27','A rejected row leaves the plan record untouched',()=>{
+    const S=structuredClone(S0);const rows=rowsToObjects(parseCSV(sampleFile(S,'changes'))).rows;
+    const sb=buildSubmission(S,S.submitters[0],rows,'portal');S.submissions.push(sb);
+    submitSubmission(S,sb,'tester');
+    const ix=sb.items.findIndex(i=>i.d.kind==='change');
+    const before=JSON.stringify(sb.items[ix].d.existing);
+    sb.items.forEach((it,i)=>decideItem(S,sb,i,i===ix?'reject':'approve',i===ix?'Not confirmed by contracting':''));
+    finaliseSubmission(S,sb,'reviewer');
+    return JSON.stringify(sb.items[ix].d.existing)===before});
+  T('T28','Approving a change sets the basis to attested and the verification date to today',()=>{
+    const S=structuredClone(S0);const rows=rowsToObjects(parseCSV(sampleFile(S,'changes'))).rows;
+    const sb=buildSubmission(S,S.submitters[0],rows,'portal');S.submissions.push(sb);
+    submitSubmission(S,sb,'tester');
+    const ix=sb.items.findIndex(i=>i.d.kind==='change');
+    sb.items.forEach((it,i)=>decideItem(S,sb,i,'approve',''));
+    finaliseSubmission(S,sb,'reviewer');
+    const e=sb.items[ix].d.existing;return e.basis==='attested'&&e.lastV===ASOF_ISO});
+  T('T29','Turnaround is recorded and the first-pass rate is computed from rows, not files',()=>{
+    const S=structuredClone(S0);const rows=rowsToObjects(parseCSV(sampleFile(S,'clean'))).rows;
+    const sb=buildSubmission(S,S.submitters[0],rows,'portal');S.submissions.push(sb);
+    submitSubmission(S,sb,'tester');
+    sb.items.forEach((it,i)=>decideItem(S,sb,i,'approve',''));
+    finaliseSubmission(S,sb,'reviewer');
+    const m=metrics(S);return S.turnarounds.length===1&&m.firstPass===100});
+  T('T30','Every KPI on the dashboard has a definition, source, owner and threshold',()=>
+    Object.values(KPIDEF).every(k=>k.name&&k.def&&k.src&&k.owner&&k.thr));
+  T('T31','Business-day count: Friday to Monday is one business day',()=>bizDays(toDay('2026-11-06'),toDay('2026-11-09'))===1);
+  T('T32','Exclusion-list and expired-licence rows both block submission',()=>{
+    const bad={npi:'1234567890',first_name:'A',last_name:'B',taxonomy:'999',tin:'1',location_id:'X',
+      address:'',phone:'',panel_status:'',effective_date:'',termination_date:''};
+    const v=validateRow(S0,bad,[bad],sub);return v.errors>=4});
   return R}
 
-/* =====================================================================
+/* ==========================================================
    STATE + UI
-   ===================================================================== */
+   ========================================================== */
 function freshState(){
-  const world=buildWorld();
-  return {world,rosters:buildRosters(world),set:JSON.parse(JSON.stringify(DEF)),
-    submissions:[],audit:[],events:[],turnarounds:[],
-    ui:{screen:'start',side:null,actor:null,sub:null,step:1,raw:'',parsed:null,validated:null,diff:null,
-        filter:'all',rowOpen:null,attest:false,note:'',err:'',sel:null,tab:'changed',drawer:false,dialog:null,
-        toast:null,tests:null,setErr:null,pendingSet:null}}}
+  const g=generate();
+  return Object.assign({},g,{submissions:[],audit:[],events:[],turnarounds:[],
+    ui:{screen:'start',side:null,actor:null,sub:FOCAL,draft:null,sel:null,csv:'',
+        parseErr:'',filter:'all',dialog:null,toast:null,drawer:false,tests:null,
+        noteFor:null,noteVal:'',kpi:null,page:0}})}
 let S=freshState();
 const $=id=>document.getElementById(id);
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const pc=n=>(n===null||n===undefined)?'n/a':(Math.round(n*10)/10).toFixed(1)+'%';
-const ICON={up:'<path d="M12 19V7M6 13l6-6 6 6"/><path d="M4 21h16"/>',
-  diff:'<path d="M12 3v18M5 8l7-5 7 5M5 16l7 5 7-5"/>',
-  queue:'<path d="M4 6h16M4 12h10M4 18h7"/>',
+const pc=n=>n===null?'n/a':(Math.round(n*10)/10).toFixed(1)+'%';
+const ICON={up:'<path d="M12 19V5M5 12l7-7 7 7"/>',
+  stat:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+  rev:'<path d="M4 6h16M4 12h10M4 18h7"/>',
   dash:'<rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>',
-  audit:'<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/>',
   feed:'<path d="M4 11a9 9 0 0 1 9 9M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1.5"/>',
+  audit:'<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/>',
   set:'<circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 0 0-.1-1.2l2-1.5-2-3.4-2.3 1a7 7 0 0 0-2-1.2L14 3h-4l-.6 2.7a7 7 0 0 0-2 1.2l-2.3-1-2 3.4 2 1.5A7 7 0 0 0 5 12c0 .4 0 .8.1 1.2l-2 1.5 2 3.4 2.3-1a7 7 0 0 0 2 1.2L10 21h4l.6-2.7a7 7 0 0 0 2-1.2l2.3 1 2-3.4-2-1.5c.1-.4.1-.8.1-1.2z"/>',
   back:'<path d="M19 12H5M12 19l-7-7 7-7"/>'};
-const NAV_SUB=[['up','Submit','submit'],['audit','My submissions','mysubs']];
-const NAV_PLAN=[['dash','Dashboard','dash'],['queue','Review queue','queue'],['feed','Event feed','feed'],['audit','Audit log','audit'],['set','Settings','set']];
-const subOf=id=>SUBMITTERS.find(s=>s.id===id);
-function toast(msg,bad){S.ui.toast={msg,bad};$('live').textContent=msg;clearTimeout(toast.t);toast.t=setTimeout(()=>{S.ui.toast=null;render()},4500)}
-function go(sc){S.ui.screen=sc;render();window.scrollTo(0,0)}
+const NAV_P=[['up','Submit roster','submit'],['stat','Status','status']];
+const NAV_H=[['dash','Dashboard','dash'],['rev','Review queue','queue'],['feed','Downstream feed','feed'],['audit','Audit log','audit'],['set','Settings','set']];
+
+function toast(msg,bad){S.ui.toast={msg,bad};$('live').textContent=msg;clearTimeout(toast.t);
+  toast.t=setTimeout(()=>{S.ui.toast=null;render()},4500)}
+function go(sc){S.ui.screen=sc;S.ui.page=0;render();window.scrollTo(0,0)}
+const subOf=id=>S.submitters.find(s=>s.id===id);
 
 function vStart(){
-  return `<div class="hero"><span class="badge">Roster validation and submission layer</span>
-  <h1>Submit a roster once, validated at entry, and let the plan apply it the same day.</h1>
-  <p>Rosters arrive as spreadsheets by email and are corrected weeks later by telephone. This validates every row against registry, licensing and exclusion sources before it is submitted, shows the submitter exactly what differs from the plan record, and gives the plan a versioned queue that writes straight through to downstream systems. Choose a role to begin.</p>
-  <div class="roles">
-  ${SUBMITTERS.map(s=>`<button class="role" data-a="role" data-v="sub:${s.id}"><b>${esc(s.label)}</b><span class="muted">${esc(s.blurb)}</span></button>`).join('')}
-  <button class="role" data-a="role" data-v="plan:ops"><b>Provider data ops</b><span class="muted">Review submitted rosters, approve or reject row by row, and clear the queue.</span></button>
-  <button class="role" data-a="role" data-v="plan:comp"><b>Compliance</b><span class="muted">Attested share, field freshness, thresholds and the audit trail behind every change.</span></button>
-  </div>
-  <p style="margin-top:24px;font-size:12px;color:#8fa5d8">Synthetic data throughout. ${S.world.master.length} listings across three submitter types, as-of ${ASOF_ISO}. Nothing is transmitted and no real provider data is present.</p></div>`}
-function header(title,sub){
-  return `<div class="top"><div><h1>${esc(title)}</h1>${sub?`<div class="muted" style="font-size:12px">${esc(sub)}</div>`:''}</div>
+  const roles=[['practice','Practice administrator','Northgate Medical Group. Upload your monthly roster, see every error explained before it reaches the plan, and attest.'],
+    ['ops','Provider data operations','Review what providers submitted, line by line, against the plan record. Approve, reject, and watch it flow downstream.'],
+    ['exec','Network and compliance','Directory health, first-pass validation, roster turnaround and attested share, each with its definition, owner and threshold.']];
+  return `<div class="hero"><span class="badge-sim">Roster validation and submission layer</span>
+  <h1>Validate the roster before it reaches the plan, not six weeks after.</h1>
+  <p>Providers submit once, in their own format. Every row is checked against the registry, the licensing board, the exclusion list and the plan's own record, with the rule, the source and the confidence shown for each finding. The plan reviews a clean, diffed file instead of a spreadsheet by email, and approved changes flow straight to claims, the directory and prior authorisation.</p>
+  <div class="roles">${roles.map(r=>`<button class="role" data-a="role" data-v="${r[0]}"><b>${r[1]}</b><span class="muted">${r[2]}</span></button>`).join('')}</div>
+  <p style="margin-top:26px;font-size:12px;color:#8fa5d8">Synthetic data: ${S.submitters.length} contracted organisations, ${S.plan.length} listings, ${S.registry.length} registry records &middot; as-of ${ASOF_ISO} &middot; resets on refresh</p></div>`}
+
+function header(t,sub){return `<div class="top"><div><h1>${esc(t)}</h1>${sub?`<div class="muted" style="font-size:12px">${esc(sub)}</div>`:''}</div>
   <span class="sp"></span><button class="btn sm" data-a="switch">Switch role</button><button class="btn sm" data-a="drawer">About</button></div>`}
-function stepper(){const n=S.ui.step;const names=['Upload','Validate','Compare','Attest'];
-  return `<div class="steps">${names.map((x,i)=>`<span class="step ${n===i+1?'on':n>i+1?'done':''}"><i>${n>i+1?'✓':i+1}</i>${x}</span>`).join('')}</div>`}
 
+/* ---------- provider: submit ---------- */
 function vSubmit(){
-  const sub=subOf(S.ui.sub);const st=S.ui.step;let body='';
-  if(st===1){
-    body=`<div class="card"><h2>Upload the roster file</h2>
-    <p class="muted">Comma-separated, with the header row: ${COLS.join(', ')}. Up to 500 rows.</p>
-    ${S.ui.err?`<div class="bad" role="alert">${esc(S.ui.err)}</div>`:''}
-    <div class="row" style="margin-bottom:12px">
-      <div><label for="fi">Choose a file</label><input id="fi" type="file" accept=".csv,text/csv,text/plain" data-c="file"></div>
-      <button class="btn" data-a="loadsample">Load this organisation’s current file</button>
-      <button class="btn sm" data-a="template">Show the template</button></div>
-    <div class="fld"><label for="ta">Or paste the rows</label>
-      <textarea id="ta" rows="8" data-c="raw" placeholder="${esc(COLS.join(','))}">${esc(S.ui.raw)}</textarea></div>
-    <button class="btn primary" data-a="validate">Validate</button></div>`}
-  if(st===2){
-    const v=S.ui.validated;const f=S.ui.filter;
-    const shown=v.res.filter(x=>f==='all'||x.sev===f);
-    body=`<div class="grid kpis" style="grid-template-columns:repeat(auto-fit,minmax(170px,1fr))">
-      <div class="kpi"><div class="l">Rows</div><div class="v">${v.res.length}</div></div>
-      <div class="kpi"><div class="l">First-pass validation</div><div class="v">${pc(v.firstPass)}</div><div class="s">No error and no warning</div></div>
-      <div class="kpi"><div class="l">Blocking errors</div><div class="v" style="color:${v.errors?'var(--badt)':'var(--okt)'}">${v.errors}</div><div class="s">Must be fixed to submit</div></div>
-      <div class="kpi"><div class="l">Warnings</div><div class="v" style="color:${v.warnings?'var(--ort)':'var(--okt)'}">${v.warnings}</div><div class="s">Submit with an attestation</div></div></div>
-    <div class="card"><div class="row" style="margin-bottom:10px">
-      <div class="tabs">${[['all','All '+v.res.length],['error','Errors '+v.errors],['warning','Warnings '+v.warnings],['clean','Clean '+v.clean]].map(t=>`<button class="tab ${f===t[0]?'on':''}" data-a="vfilter" data-v="${t[0]}">${t[1]}</button>`).join('')}</div>
-      <span class="sp"></span><button class="btn" data-a="back1">Start again</button>
-      <button class="btn primary" data-a="todiff" ${v.errors?'disabled':''}>${v.errors?'Fix '+v.errors+' error'+(v.errors>1?'s':'')+' to continue':'Compare with the plan record'}</button></div>
-    ${v.errors?`<div class="warn">Rows with a blocking error are excluded from the comparison and cannot be submitted. Open a row to see the rule, the source and the confidence, then correct it in place and re-validate.</div>`:''}
-    <div class="scroll"><table><thead><tr><th>#</th><th>Status</th><th>NPI</th><th>Provider</th><th>Location</th><th>Taxonomy</th><th>Findings</th><th></th></tr></thead><tbody>
-    ${shown.slice(0,120).map(x=>{const open=S.ui.rowOpen===x.i;
-      return `<tr class="${x.sev==='error'?'rowerr':x.sev==='warning'?'rowwarn':''}">
-      <td>${x.i+1}</td><td><span class="pill ${x.sev==='error'?'p-rm':x.sev==='warning'?'p-in':'p-ok'}">${x.sev==='clean'?'Clean':x.sev==='error'?'Error':'Warning'}</span></td>
-      <td>${esc(x.row.npi)}</td><td>${esc(x.row.name)}</td><td>${esc(x.row.locationName)}</td>
-      <td>${esc(TAXONOMY[x.row.taxonomy]||x.row.taxonomy||'')}</td>
-      <td style="white-space:normal;max-width:320px">${x.checks.length?esc(x.checks.map(c=>c.label).join('; ')):'<span class="muted">None</span>'}</td>
-      <td><button class="btn sm" data-a="rowopen" data-v="${x.i}">${open?'Close':'Open'}</button></td></tr>
-      ${open?`<tr><td colspan="8" style="white-space:normal;background:var(--bg)">
-        ${x.checks.map(c=>`<div class="chk ${c.sev==='error'?'e':'w'}"><b>${esc(c.label)}</b> &middot; ${esc(c.detail)}
-        <div class="meta">Source: ${esc(c.source)} &middot; ${c.kind==='rule'?'Deterministic rule':'Inferred from a reference source'} &middot; confidence ${c.conf}%</div></div>`).join('')||'<div class="muted">Every check passed.</div>'}
-        <div class="row" style="margin-top:8px">
-        ${['npi','name','tin','locationName','phone','taxonomy','panelStatus','effectiveDate','terminationDate'].map(cc=>
-          `<div class="fld" style="min-width:150px;margin:0"><label for="e-${cc}">${COL_LABEL[cc]}</label><input id="e-${cc}" type="text" value="${esc(x.row[cc]||'')}" data-c="edit" data-k="${cc}" data-i="${x.i}"></div>`).join('')}</div>
-        <button class="btn sm solid" data-a="revalidate" style="margin-top:8px">Save and re-validate</button></td></tr>`:''}`}).join('')}
-    </tbody></table></div>
-    ${shown.length>120?`<p class="muted">Showing the first 120 of ${shown.length} rows.</p>`:''}</div>`}
-  if(st===3){
-    const d=S.ui.diff;const c=diffCounts(d);const t=S.ui.tab;const shown=d.filter(x=>x.kind===t);
-    body=`<div class="grid kpis" style="grid-template-columns:repeat(auto-fit,minmax(150px,1fr))">
-      ${[['new','New'],['changed','Changed'],['terminate','Terminations'],['unchanged','Unchanged'],['absent','Absent from file']]
-        .map(x=>`<div class="kpi"><div class="l">${x[1]}</div><div class="v">${c[x[0]]}</div></div>`).join('')}</div>
-    <div class="card"><div class="row" style="margin-bottom:10px">
-      <div class="tabs">${[['new','New'],['changed','Changed'],['terminate','Terminations'],['unchanged','Unchanged'],['absent','Absent from file']].map(x=>`<button class="tab ${t===x[0]?'on':''}" data-a="dtab" data-v="${x[0]}">${x[1]} (${c[x[0]]})</button>`).join('')}</div>
-      <span class="sp"></span><button class="btn" data-a="back2">Back to validation</button>
-      <button class="btn primary" data-a="toattest">Attest and submit</button></div>
-    ${t==='absent'?`<div class="warn">These listings are on the plan record but absent from your file. A sustained absence is treated as an implied termination. If they have left, include them with a termination date rather than omitting them.</div>`:''}
-    <div class="scroll"><table><thead><tr><th>NPI</th><th>Provider</th><th>Location</th><th>What changes</th></tr></thead><tbody>
-    ${shown.slice(0,120).map(x=>{const r=x.v?x.v.row:x.rec;
-      return `<tr><td>${esc(r.npi)}</td><td>${esc(r.name)}</td><td>${esc(r.locationName)}</td>
-      <td style="white-space:normal;max-width:460px">${
-        x.kind==='new'?'<span class="pill p-nv">Not on the plan record</span>':
-        x.kind==='absent'?'<span class="pill p-in">On the plan record, not in this file</span>':
-        x.kind==='terminate'?'<span class="pill p-rm">Termination dated '+esc(x.v.row.terminationDate)+'</span>':
-        x.fields.length?x.fields.map(f=>`<div>${esc(FIELD_LABEL[f.field]||f.field)}: <span class="diffold">${esc(f.from||'blank')}</span> &rarr; <span class="diffnew">${esc(f.to)}</span></div>`).join(''):
-        '<span class="muted">No change</span>'}</td></tr>`}).join('')}
-    </tbody></table></div>
-    ${!shown.length?'<p class="muted">Nothing in this category.</p>':''}
-    ${shown.length>120?`<p class="muted">Showing the first 120 of ${shown.length} rows.</p>`:''}</div>`}
-  if(st===4){
-    const c=diffCounts(S.ui.diff);const v=S.ui.validated;
-    body=`<div class="card" style="max-width:740px"><h2>Attest and submit</h2>
-    <p>You are submitting <b>${c.new} new</b>, <b>${c.changed} changed</b> and <b>${c.terminate} terminated</b> listings for ${esc(sub.org)}. ${c.unchanged} unchanged rows are recorded but create no work for the plan. First-pass validation on this file was <b>${pc(v.firstPass)}</b>.</p>
-    ${v.warnings?`<div class="warn">${v.warnings} row${v.warnings>1?'s carry':' carries'} a warning. Submitting attests that you have reviewed them.</div>`:''}
-    ${S.ui.err?`<div class="bad" role="alert">${esc(S.ui.err)}</div>`:''}
-    <div class="fld"><label><input type="checkbox" data-c="attest" ${S.ui.attest?'checked':''} style="width:auto;margin-right:6px">
-      I confirm this roster is accurate as at ${ASOF_ISO} and that I am authorised to submit it for ${esc(sub.org)}.</label></div>
-    <div class="fld"><label for="nt">Note for the reviewer (optional)</label><input id="nt" type="text" data-c="note" value="${esc(S.ui.note)}" placeholder="Two clinicians joined in October"></div>
-    <div class="row"><button class="btn" data-a="back3">Back to the comparison</button>
-    <button class="btn primary" data-a="dosubmit">Submit roster</button></div>
-    <p class="muted" style="font-size:11.5px;margin-top:10px">The submission is versioned and retained with the submitting role and the time. The plan reviews it row by row and you can follow the outcome under My submissions.</p></div>`}
-  return header('Submit roster',sub.org+' · TIN '+sub.tin)+`<div class="page">${stepper()}${body}</div>`}
+  const sub=subOf(S.ui.sub);const d=S.ui.draft;
+  if(!d)return header('Submit a roster',sub.name+' · TIN '+sub.tin)+`<div class="page">
+  <div class="info">Upload a roster in CSV. Required columns: <span class="mono">${COLS.join(', ')}</span>. Nothing is sent to the plan until you have cleared every blocking error and attested.</div>
+  <div class="grid two-e">
+    <div class="card"><h2>Upload a file</h2>
+      <div class="fld"><label for="fi">Choose a CSV file</label><input id="fi" type="file" accept=".csv,text/csv" data-c="file"></div>
+      <p class="muted">Or paste the contents below. Both paths run the same validation.</p>
+      <form data-f="paste"><div class="fld"><label for="csv">Paste CSV</label><textarea id="csv" rows="7" data-c="csv" placeholder="${esc(COLS.join(','))}">${esc(S.ui.csv)}</textarea></div>
+      ${S.ui.parseErr?`<div class="err" role="alert">${esc(S.ui.parseErr)}</div>`:''}
+      <button class="btn solid" type="submit">Validate</button></form></div>
+    <div class="card"><h2>Start from a sample</h2>
+      <p class="muted">Three synthetic files for this practice, so the validation can be seen end to end.</p>
+      <div class="row">
+        <button class="btn" data-a="sample" data-v="clean">Monthly roster, no changes</button>
+        <button class="btn" data-a="sample" data-v="changes">Roster with real changes</button>
+        <button class="btn" data-a="sample" data-v="errors">Roster with ten problems</button>
+      </div>
+      <h3 style="margin-top:16px">What is checked</h3>
+      <div class="scroll"><table><thead><tr><th>Check</th><th>Source</th><th>Severity</th></tr></thead><tbody>
+      ${Object.values(RULES).map(r=>`<tr><td style="white-space:normal">${esc(r.label)}</td><td class="src" style="white-space:normal">${esc(r.src)}</td><td><span class="pill ${r.sev==='error'?'p-rm':r.sev==='warning'?'p-in':'p-gr'}">${r.sev}</span></td></tr>`).join('')}
+      </tbody></table></div></div>
+  </div></div>`;
 
-function vMySubs(){
-  const sub=subOf(S.ui.sub);
-  const mine=S.submissions.filter(s=>s.sub===S.ui.sub).slice().reverse();
-  return header('My submissions',sub.org)+`<div class="page"><div class="card">
-  ${mine.length?`<div class="scroll"><table><thead><tr><th>Reference</th><th>Version</th><th>Rows for review</th><th>First-pass</th><th>Status</th><th>Outcome</th></tr></thead><tbody>
-  ${mine.map(s=>{const ap=s.rows.filter(r=>r.decision==='approve').length,rj=s.rows.filter(r=>r.decision==='reject').length;
-    return `<tr><td>${esc(s.id)}</td><td>${s.version}</td><td>${s.rows.length}</td><td>${pc(s.firstPass)}</td>
-    <td><span class="pill ${s.status==='applied'?'p-ok':'p-nv'}">${s.status==='applied'?'Applied':'Awaiting review'}</span></td>
-    <td>${s.status==='applied'?ap+' approved, '+rj+' rejected':'<span class="muted">Pending</span>'}</td></tr>`}).join('')}
-  </tbody></table></div>`:'<p class="muted">Nothing submitted yet. Upload a roster from the Submit screen.</p>'}
-  ${(()=>{const rej=S.submissions.filter(s=>s.sub===S.ui.sub).flatMap(s=>s.rows.filter(r=>r.decision==='reject'));
-    return rej.length?`<h2 style="margin-top:16px">Rejected rows and why</h2><div class="scroll"><table><thead><tr><th>Provider</th><th>Location</th><th>Reason given</th></tr></thead><tbody>
-    ${rej.map(r=>`<tr><td>${esc(r.name)}</td><td>${esc(r.locationName)}</td><td style="white-space:normal">${esc(r.reason)}</td></tr>`).join('')}</tbody></table></div>`:''})()}
+  const errs=d.items.filter(i=>i.v.errors>0).length;
+  const warns=d.items.filter(i=>i.v.errors===0&&i.v.warnings>0).length;
+  const clean=d.items.filter(i=>i.v.clean).length;
+  const changes=d.items.filter(i=>i.d.kind!=='same').length;
+  const f=S.ui.filter;
+  const show=d.items.map((it,i)=>({it,i})).filter(({it})=>
+    f==='all'?true:f==='errors'?it.v.errors>0:f==='warnings'?it.v.errors===0&&it.v.warnings>0:
+    f==='changes'?it.d.kind!=='same':it.v.clean);
+  return header('Validation report',`${sub.name} · ${d.rows} rows · ${d.channel}`)+`<div class="page">
+  <div class="grid kpis">
+    <div class="kpi" data-a="filt" data-v="all"><div class="l">Rows</div><div class="v">${d.rows}</div><div class="s">in this file</div></div>
+    <div class="kpi" data-a="filt" data-v="errors"><div class="l">Blocking errors</div><div class="v" style="color:${errs?'var(--badt)':'var(--navy2)'}">${errs}</div><div class="s">must be fixed to submit</div></div>
+    <div class="kpi" data-a="filt" data-v="warnings"><div class="l">Warnings</div><div class="v">${warns}</div><div class="s">can be attested as-is</div></div>
+    <div class="kpi" data-a="filt" data-v="clean"><div class="l">First-pass clean</div><div class="v">${pc(d.rows?clean/d.rows*100:0)}</div><div class="s">${clean} of ${d.rows} rows</div></div>
+    <div class="kpi" data-a="filt" data-v="changes"><div class="l">Changes vs plan record</div><div class="v">${changes}</div><div class="s">additions, edits, terminations</div></div>
+  </div>
+  ${errs?`<div class="bad">${errs} row${errs>1?'s':''} cannot be submitted until fixed. Each one says which rule fired, where the rule looked, and how confident it is.</div>`
+    :`<div class="okb">No blocking errors. Review the ${changes} change${changes===1?'':'s'} below, then attest and submit.</div>`}
+  <div class="row" style="margin-bottom:10px">
+    <div class="tabs" style="margin:0">${[['all','All rows'],['errors','Errors'],['warnings','Warnings'],['changes','Changes'],['clean','Clean']].map(x=>`<button class="tab ${f===x[0]?'on':''}" data-a="filt" data-v="${x[0]}">${x[1]}</button>`).join('')}</div>
+    <span class="sp"></span>
+    <button class="btn" data-a="discard">Discard</button>
+    <button class="btn primary" data-a="attest" ${errs?'disabled':''}>Attest and submit</button>
+  </div>
+  ${show.length?show.map(({it,i})=>rowCard(it,i)).join(''):'<p class="muted">No rows match this filter.</p>'}
+  </div>`}
+
+function rowCard(it,i){
+  const r=it.row,v=it.v,d=it.d;
+  const cls=v.errors?'e':v.warnings?'w':'okr';
+  const dk={add:['p-ok','New at this location'],change:['p-in','Changed'],terminate:['p-rm','Termination'],same:['p-gr','No change']}[d.kind];
+  return `<div class="rowc ${cls}">
+    <div class="row" style="justify-content:space-between;align-items:flex-start">
+      <div><b>${esc(r.first_name)} ${esc(r.last_name)}</b> <span class="mono">${esc(r.npi)}</span>
+      <span class="pill ${dk[0]}">${dk[1]}</span><br>
+      <span class="muted">${esc(TAXONOMY[r.taxonomy]||r.taxonomy)} &middot; ${esc(r.location_id)} &middot; ${esc(r.phone)} &middot; ${esc(r.panel_status)}</span>
+      <span class="src"> &middot; line ${r._line}</span></div>
+      <button class="btn sm" data-a="fix" data-v="${i}">${v.errors?'Fix':'Edit'}</button>
+    </div>
+    ${v.findings.length?`<div class="find">${v.findings.map(x=>`<div><span class="pill ${x.sev==='error'?'p-rm':x.sev==='warning'?'p-in':'p-gr'}">${x.sev}</span> <b>${esc(x.label)}</b>${x.detail?': '+esc(x.detail):''}<br><span class="src">Rule source: ${esc(x.src)} &middot; confidence ${esc(x.conf)}</span></div>`).join('')}</div>`:''}
+    ${d.kind==='change'&&d.fields.length?`<div class="find"><b>Differences from the plan record</b><div class="scroll"><table><thead><tr><th>Field</th><th>Plan record</th><th>Your file</th></tr></thead><tbody>${d.fields.map(x=>`<tr><td>${esc(x.field)}</td><td class="diffdel" style="white-space:normal">${esc(x.was)||'<span class="muted">empty</span>'}</td><td class="diffadd" style="white-space:normal">${esc(x.now)||'<span class="muted">empty</span>'}</td></tr>`).join('')}</tbody></table></div></div>`:''}
+  </div>`}
+
+function vFix(){
+  const i=S.ui.sel,d=S.ui.draft;
+  if(!d||d.items[i]==null)return header('Edit row')+'<div class="page"><div class="card">No row selected.</div></div>';
+  const it=d.items[i],r=it.row;
+  const fld=(k,label,hint)=>`<div class="fld"><label for="e-${k}">${label}</label><input id="e-${k}" type="text" data-c="edit" data-k="${k}" value="${esc(r[k])}">${hint?`<div class="src">${esc(hint)}</div>`:''}</div>`;
+  return header('Edit row '+r._line,`${r.first_name} ${r.last_name}`)+`<div class="page">
+  <p><button class="btn sm" data-a="back">&larr; Back to the report</button></p>
+  <div class="grid two-e">
+    <div class="card"><h2>Row values</h2><form data-f="fix">
+      ${fld('npi','NPI','Ten digits, check digit validated')}
+      ${fld('first_name','First name')}${fld('last_name','Last name')}
+      ${fld('taxonomy','Taxonomy code','Recognised codes: '+TAX_CODES.slice(0,4).join(', ')+' and others')}
+      ${fld('tin','TIN','Nine digits')}
+      ${fld('location_id','Location code','Contracted sites: '+S.locations.filter(l=>l.sub===d.sub).map(l=>l.id).join(', '))}
+      ${fld('address','Address')}${fld('phone','Phone','Ten digits')}
+      ${fld('panel_status','Panel status','One of: '+PANEL.join(', '))}
+      ${fld('effective_date','Effective date','YYYY-MM-DD')}
+      ${fld('termination_date','Termination date','YYYY-MM-DD, or leave blank')}
+      <button class="btn primary" type="submit">Revalidate this row</button>
+    </form></div>
+    <div class="card"><h2>Current findings</h2>
+      ${it.v.findings.length?it.v.findings.map(x=>`<div class="find"><span class="pill ${x.sev==='error'?'p-rm':x.sev==='warning'?'p-in':'p-gr'}">${x.sev}</span> <b>${esc(x.label)}</b>${x.detail?': '+esc(x.detail):''}<br><span class="src">Source: ${esc(x.src)} &middot; confidence ${esc(x.conf)}</span></div>`).join(''):'<div class="okb">This row passes every check.</div>'}
+    </div></div></div>`}
+
+function vStatus(){
+  const mine=S.submissions.filter(s=>s.sub===S.ui.sub&&s.status!=='draft').sort((a,b)=>b.created-a.created);
+  return header('Submission status',subOf(S.ui.sub).name)+`<div class="page"><div class="card">
+  ${mine.length?`<div class="scroll"><table><thead><tr><th>Submission</th><th>Channel</th><th>Rows</th><th>First-pass clean</th><th>Status</th><th>Turnaround</th></tr></thead><tbody>
+  ${mine.map(sb=>{const t=S.turnarounds.find(x=>x.sb===sb.id);
+    const rej=sb.items.filter(i=>i.decision==='reject');
+    return `<tr><td>${sb.id}</td><td>${esc(sb.channel)}</td><td>${sb.rows}</td><td>${pc(sb.rows?sb.firstPassClean/sb.rows*100:0)}</td>
+    <td><span class="pill ${sb.status==='completed'?'p-ok':'p-nv'}">${sb.status==='completed'?'reviewed':'awaiting plan review'}</span>
+    ${rej.length?`<div class="src">${rej.length} row${rej.length>1?'s':''} rejected</div>`:''}</td>
+    <td>${t?t.hours.toFixed(1)+'h':'pending'}</td></tr>
+    ${rej.length?rej.map(i=>`<tr><td></td><td colspan="5" style="white-space:normal"><span class="pill p-rm">rejected</span> ${esc(i.row.first_name)} ${esc(i.row.last_name)} at ${esc(i.row.location_id)}: ${esc(i.note)}</td></tr>`).join(''):''}`}).join('')}
+  </tbody></table></div>`:'<p class="muted">Nothing submitted yet. Start on the submit screen.</p>'}
   </div></div>`}
 
-function vDash(){
-  const K=kpis(S,S.world);const fr=freshness(S.world,S);const live=liveMaster(S.world);
-  const basis={attested:0,inferred:0,carried:0};live.forEach(m=>{basis[m.basis]=(basis[m.basis]||0)+1});
-  const BL={attested:'Attested by the submitter',inferred:'Inferred from a reference source',carried:'Carried over from an earlier file'};
-  return header('Provider data dashboard','Every measure carries a definition, a source, an owner and a threshold')+`<div class="page">
-  <div class="grid kpis">${K.map(k=>`<div class="kpi">
-    <div class="l">${esc(k.label)}</div>
-    <div class="v${k.value===null?' txt':''}">${k.fmt==='pct'?pc(k.value):k.fmt==='hours'?(k.value===null?'No data yet':k.value.toFixed(1)+' h'):k.value}</div>
-    <div class="s">${k.pass===null?'<span class="pill p-gr">Not yet measured</span>':`<span class="pill ${k.pass?'p-ok':'p-rm'}">${k.pass?'Within threshold':'Outside threshold'}</span>`} ${esc(k.threshold)}</div>
-    <details><summary>Definition, source, owner</summary><dl>
-      <dt>Definition</dt><dd>${esc(k.definition)}</dd><dt>Source</dt><dd>${esc(k.source)}</dd>
-      <dt>Owner</dt><dd>${esc(k.owner)}</dd><dt>Next action</dt><dd>${esc(k.action)}</dd></dl></details></div>`).join('')}</div>
-  <div class="grid two">
-    <div class="card"><h2>Basis of the live record</h2>
-    <p class="muted" style="font-size:12px">Attested means a submitter confirmed it. Inferred and carried-over are not attestations and are reported separately, never blended.</p>
-    ${Object.keys(BL).map(k=>`<div style="margin-bottom:8px"><div style="display:flex;justify-content:space-between"><span>${BL[k]}</span><b>${basis[k]||0} (${pc(live.length?(basis[k]||0)/live.length*100:0)})</b></div>
-      <div class="bar"><i style="width:${live.length?(basis[k]||0)/live.length*100:0}%;background:${k==='attested'?'var(--ok)':k==='inferred'?'var(--blue)':'var(--orange)'}"></i></div></div>`).join('')}</div>
-    <div class="card"><h2>Freshness by field</h2>
-    <p class="muted" style="font-size:12px">Median age of each field and the share older than ${S.set.thresholds.freshnessDays} days. Refresh cadence should follow use: directory and claims near real time, analytics monthly.</p>
-    <div class="fresh">${fr.map(f=>`<span>${esc(f.label)}</span><div class="bar"><i style="width:${Math.min(100,f.stalePct)}%;background:${f.stalePct>40?'var(--bad)':f.stalePct>20?'var(--orange)':'var(--ok)'}"></i></div><span class="muted">${f.median}d, ${pc(f.stalePct)} stale</span>`).join('')}</div></div>
-  </div></div>`}
-
+/* ---------- plan side ---------- */
 function vQueue(){
-  const pend=S.submissions.filter(s=>s.status==='pending');
-  const sel=S.ui.sel?S.submissions.find(s=>s.id===S.ui.sel):null;
-  if(!sel){
-    return header('Review queue','Submitted rosters awaiting a decision')+`<div class="page"><div class="card">
-    ${pend.length?`<div class="scroll"><table><thead><tr><th>Reference</th><th>Organisation</th><th>Version</th><th>Rows</th><th>First-pass</th><th>Waiting</th><th></th></tr></thead><tbody>
-    ${pend.map(s=>`<tr class="click" data-a="qopen" data-v="${s.id}"><td>${esc(s.id)}</td><td>${esc(subOf(s.sub).org)}</td><td>${s.version}</td><td>${s.rows.length}</td><td>${pc(s.firstPass)}</td><td>${((Date.now()-s.at)/36e5).toFixed(1)} h</td><td><button class="btn sm solid" data-a="qopen" data-v="${s.id}">Review</button></td></tr>`).join('')}
-    </tbody></table></div>`:'<p class="muted">The queue is empty. Switch to a submitter role, upload a roster and submit it, then come back.</p>'}
-    </div></div>`}
-  const undecided=sel.rows.filter(r=>!r.decision).length;
-  const cleanN=sel.rows.filter(r=>!r.warnings&&!r.decision).length;
-  return header('Review '+sel.id,subOf(sel.sub).org+' · version '+sel.version+(sel.note?' · "'+sel.note+'"':''))+`<div class="page">
-  <p><button class="btn sm" data-a="qback">&larr; Back to the queue</button></p>
-  ${S.ui.err?`<div class="bad" role="alert">${esc(S.ui.err)}</div>`:''}
-  <div class="card"><div class="row" style="margin-bottom:10px">
-    <button class="btn good sm" data-a="bulkclean" ${cleanN?'':'disabled'}>Approve the ${cleanN} undecided rows with no warning</button>
-    <span class="sp"></span><span class="muted">${undecided} of ${sel.rows.length} undecided</span>
-    <button class="btn primary" data-a="apply" ${undecided?'disabled':''}>${undecided?'Decide every row to apply':'Apply to the provider master'}</button></div>
-  <div class="scroll"><table><thead><tr><th>Change</th><th>NPI</th><th>Provider</th><th>Location</th><th>Detail</th><th>Warnings</th><th>Decision</th></tr></thead><tbody>
-  ${sel.rows.map(r=>`<tr><td><span class="pill ${r.kind==='new'?'p-nv':r.kind==='terminate'?'p-rm':'p-at'}">${r.kind}</span></td>
-  <td>${esc(r.npi)}</td><td>${esc(r.name)}</td><td>${esc(r.locationName)}</td>
-  <td style="white-space:normal;max-width:340px">${r.fields.length?r.fields.map(f=>`${esc(FIELD_LABEL[f.field]||f.field)}: <span class="diffold">${esc(f.from||'blank')}</span> &rarr; <span class="diffnew">${esc(f.to)}</span>`).join('<br>'):'<span class="muted">New listing</span>'}</td>
-  <td>${r.warnings?`<span class="pill p-in">${r.warnings}</span>`:'<span class="muted">0</span>'}</td>
-  <td>${r.decision?`<span class="pill ${r.decision==='approve'?'p-ok':'p-rm'}">${r.decision==='approve'?'Approved':'Rejected'}</span>${r.reason?`<div class="muted" style="font-size:11px;white-space:normal;max-width:180px">${esc(r.reason)}</div>`:''} <button class="btn sm" data-a="undecide" data-v="${esc(r.k)}">Undo</button>`
-    :`<button class="btn sm good" data-a="approve" data-v="${esc(r.k)}">Approve</button> <button class="btn sm danger" data-a="rejectask" data-v="${esc(r.k)}">Reject</button>`}</td></tr>`).join('')}
-  </tbody></table></div></div></div>`}
+  const q=S.submissions.filter(s=>s.status==='submitted');
+  const done=S.submissions.filter(s=>s.status==='completed');
+  return header('Review queue','Submissions awaiting a decision')+`<div class="page">
+  <div class="card"><h2>${q.length} awaiting review</h2>
+  ${q.length?`<div class="scroll"><table><thead><tr><th>Submission</th><th>Organisation</th><th>Channel</th><th>Rows</th><th>Changes</th><th>Waiting</th><th></th></tr></thead><tbody>
+  ${q.map(sb=>{const ch=sb.items.filter(i=>i.d.kind!=='same').length;
+    return `<tr class="click" data-a="open" data-v="${sb.id}"><td>${sb.id}</td><td>${esc(subOf(sb.sub).name)}</td><td>${esc(sb.channel)}</td><td>${sb.rows}</td><td>${ch}</td><td>${((Date.now()-sb.submittedAt)/36e5).toFixed(1)}h</td><td><button class="btn sm solid" data-a="open" data-v="${sb.id}">Review</button></td></tr>`}).join('')}
+  </tbody></table></div>`:'<p class="muted">Nothing waiting. Submit a roster from the practice side to populate this queue.</p>'}
+  </div>
+  ${done.length?`<div class="card" style="margin-top:14px"><h2>Completed</h2><div class="scroll"><table><thead><tr><th>Submission</th><th>Organisation</th><th>Rows</th><th>Approved</th><th>Rejected</th><th>Turnaround</th></tr></thead><tbody>
+  ${done.map(sb=>{const t=S.turnarounds.find(x=>x.sb===sb.id);
+    return `<tr><td>${sb.id}</td><td>${esc(subOf(sb.sub).name)}</td><td>${sb.rows}</td><td>${sb.items.filter(i=>i.decision==='approve').length}</td><td>${sb.items.filter(i=>i.decision==='reject').length}</td><td>${t?t.hours.toFixed(1)+'h':''}</td></tr>`}).join('')}
+  </tbody></table></div></div>`:''}
+  </div>`}
+
+function vReview(){
+  const sb=S.submissions.find(x=>x.id===S.ui.sel);
+  if(!sb)return header('Review')+'<div class="page"><div class="card">No submission selected.</div></div>';
+  const undecided=sb.items.filter(i=>i.decision===null).length;
+  const chg=sb.items.map((it,i)=>({it,i})).filter(({it})=>it.d.kind!=='same');
+  const same=sb.items.filter(i=>i.d.kind==='same').length;
+  return header('Review '+sb.id,`${subOf(sb.sub).name} · ${sb.rows} rows · attested by ${esc(sb.attestedBy||'')}`)+`<div class="page">
+  <p><button class="btn sm" data-a="nav" data-v="queue">&larr; Back to the queue</button></p>
+  ${sb.status==='completed'?'<div class="okb">This submission has been completed.</div>':`
+  <div class="info">${same} row${same===1?'':'s'} match the plan record exactly and are approved automatically on completion. ${chg.length} row${chg.length===1?'':'s'} need a decision.</div>
+  <div class="row" style="margin-bottom:12px">
+    <button class="btn ok" data-a="allapprove">Approve all changes</button>
+    <span class="sp"></span>
+    <span class="muted">${undecided} undecided</span>
+    <button class="btn primary" data-a="finalise" ${undecided?'disabled':''}>Complete review</button>
+  </div>`}
+  ${chg.map(({it,i})=>reviewCard(sb,it,i)).join('')||'<p class="muted">No changes in this submission.</p>'}
+  </div>`}
+
+function reviewCard(sb,it,i){
+  const r=it.row,d=it.d;
+  const dk={add:['p-ok','New at this location'],change:['p-in','Changed'],terminate:['p-rm','Termination']}[d.kind]||['p-gr','No change'];
+  const dec=it.decision;
+  return `<div class="rowc ${dec==='approve'?'okr':dec==='reject'?'e':''}">
+  <div class="row" style="justify-content:space-between;align-items:flex-start">
+    <div><b>${esc(r.first_name)} ${esc(r.last_name)}</b> <span class="mono">${esc(r.npi)}</span> <span class="pill ${dk[0]}">${dk[1]}</span><br>
+    <span class="muted">${esc(TAXONOMY[r.taxonomy]||r.taxonomy)} &middot; ${esc(r.location_id)} &middot; ${esc(r.panel_status)}</span></div>
+    ${sb.status==='completed'?`<span class="pill ${dec==='approve'?'p-ok':'p-rm'}">${dec}</span>`:`<div class="row" style="align-items:center">
+      <button class="btn sm ${dec==='approve'?'ok':''}" data-a="dec" data-v="${i}" data-d="approve">Approve</button>
+      <button class="btn sm ${dec==='reject'?'danger':''}" data-a="rejask" data-v="${i}">Reject</button></div>`}
+  </div>
+  ${it.v.findings.filter(f=>f.sev!=='error').length?`<div class="find">${it.v.findings.filter(f=>f.sev!=='error').map(x=>`<div><span class="pill ${x.sev==='warning'?'p-in':'p-gr'}">${x.sev}</span> <b>${esc(x.label)}</b>${x.detail?': '+esc(x.detail):''} <span class="src">(${esc(x.src)}, ${esc(x.conf)})</span></div>`).join('')}</div>`:''}
+  ${d.fields.length?`<div class="find"><div class="scroll"><table><thead><tr><th>Field</th><th>Plan record</th><th>Submitted</th></tr></thead><tbody>${d.fields.map(x=>`<tr><td>${esc(x.field)}</td><td class="diffdel" style="white-space:normal">${esc(x.was)||'empty'}</td><td class="diffadd" style="white-space:normal">${esc(x.now)||'empty'}</td></tr>`).join('')}</tbody></table></div></div>`:''}
+  ${dec==='reject'&&it.note?`<div class="find"><b>Reason given to the practice:</b> ${esc(it.note)}</div>`:''}
+  </div>`}
+
+function kpiCard(key,label,value,sub){
+  return `<button class="kpi" data-a="kpi" data-v="${key}"><div class="l">${label}</div><div class="v${/[a-z]{3}/.test(String(value))?' txt':''}">${value}</div><div class="s">${sub}</div><div class="th muted">definition, owner, threshold</div></button>`}
+function vDash(){
+  const m=metrics(S);
+  const freshness=[['Name and taxonomy','Registry snapshot','daily'],['Address and phone','Submitter attestation','on submission'],
+    ['Panel status','Submitter attestation','on submission'],['Licence status','Licensing board','weekly'],
+    ['Exclusion status','Exclusion list','monthly'],['Claims activity','Claims warehouse','daily']];
+  return header('Provider data dashboard','All contracted organisations, as of '+ASOF_ISO)+`<div class="page">
+  <div class="grid kpis">
+    ${kpiCard('firstPass','First-pass validation rate',pc(m.firstPass),m.firstPass===null?'no submissions yet':'rows clean on first upload')}
+    ${kpiCard('turnaround','Median roster turnaround',m.turnaround===null?'No data yet':m.turnaround.toFixed(1)+'h',m.turnaround===null?'complete a review to measure':'submission to decision')}
+    ${kpiCard('attested','Provider-attested share',pc(m.attestedPct),`${m.attested} of ${m.n} listings`)}
+    ${kpiCard('inCycle','Verified within 90 days',pc(m.inCyclePct),`${m.inCycle} of ${m.n} listings`)}
+    ${kpiCard('activation','Submitter activation',pc(m.activationPct),`${m.activated} of ${S.submitters.length} organisations`)}
+    ${kpiCard('portal','Share through the layer',pc(m.portalShare),m.portalShare===null?'no submissions yet':`${m.submissions} submissions recorded`)}
+  </div>
+  <div class="grid two">
+    <div class="card"><h2>Per-field freshness</h2>
+      <p class="muted">Refresh cadence is matched to use. Attested values come from the submitting organisation; inferred values come from a reference source.</p>
+      <div class="scroll"><table><thead><tr><th>Field group</th><th>Source</th><th>Refresh</th><th>Basis</th></tr></thead><tbody>
+      ${freshness.map(f=>`<tr><td>${f[0]}</td><td>${f[1]}</td><td>${f[2]}</td><td><span class="pill ${f[1].includes('attestation')?'p-at':'p-gr'}">${f[1].includes('attestation')?'attested':'inferred'}</span></td></tr>`).join('')}
+      </tbody></table></div></div>
+    <div class="card"><h2>Submissions by organisation</h2>
+      <div class="scroll"><table><thead><tr><th>Organisation</th><th>Type</th><th>Usual channel</th><th>Listings</th><th>Submissions</th></tr></thead><tbody>
+      ${S.submitters.map(s=>{const rows=listedPlan(S).filter(p=>p.sub===s.id).length;
+        const subs=S.submissions.filter(x=>x.sub===s.id&&x.status!=='draft').length;
+        return `<tr><td>${esc(s.name)}</td><td>${esc(s.kind)}</td><td>${esc(s.channel)}</td><td>${rows}</td><td>${subs?`<span class="pill p-ok">${subs}</span>`:'<span class="muted">0</span>'}</td></tr>`}).join('')}
+      </tbody></table></div></div>
+  </div></div>`}
 
 function vFeed(){
-  return header('Downstream event feed','What subscribing systems receive when a submission is applied')+`<div class="page"><div class="card">
-  <p class="muted">A roster change is only useful once it reaches claims, the directory, network adequacy reporting and care coordination. Each approved decision emits a typed event naming the systems that consume it.</p>
-  ${S.events.length?[...S.events].reverse().slice(0,40).map(e=>`<div class="ev">#${e.seq} ${esc(e.type)}
-consumers: ${esc(e.consumers.join(', '))}
-${esc(JSON.stringify(e.payload))}</div>`).join(''):'<p class="muted">No events yet. Apply a submission from the review queue.</p>'}
+  return header('Downstream feed','Events emitted when the plan approves a change')+`<div class="page">
+  <div class="card"><h2>${S.events.length} events</h2>
+  <p class="muted">Each approved change emits a typed event to the subscribing systems. This is the integration contract, shown here rather than wired to a live endpoint.</p>
+  ${S.events.length?`<div class="feed">${[...S.events].reverse().map(e=>`<div>#${e.seq} <b>${esc(e.type)}</b> → ${e.endpoints.join(', ')}\n  ${esc(JSON.stringify(e.payload))}</div>`).join('')}</div>`
+  :'<p class="muted">No events yet. Complete a review on the queue screen and they appear here.</p>'}
   </div></div>`}
 
 function vAudit(){
-  const rej=S.submissions.flatMap(s=>s.rows.filter(r=>r.decision==='reject').map(r=>({s,r})));
-  return header('Audit log','Append-only. Every submission and every decision.')+`<div class="page"><div class="card">
-  ${S.audit.length?`<div class="scroll"><table><thead><tr><th>Time</th><th>Actor</th><th>Organisation</th><th>Reference</th><th>Action</th><th>Detail</th></tr></thead><tbody>
-  ${[...S.audit].reverse().map(a=>`<tr><td>${new Date(a.t).toISOString().slice(11,19)}</td><td>${esc(a.actor)}</td><td>${esc(subOf(a.sub)?subOf(a.sub).org:'')}</td><td>${esc(a.ref)}</td><td><span class="pill p-at">${esc(a.action)}</span></td><td style="white-space:normal">${esc(a.detail)}</td></tr>`).join('')}
-  </tbody></table></div><button class="btn sm" data-a="csvaudit" style="margin-top:10px">Export the log</button>`:'<p class="muted">No entries yet.</p>'}
-  <h2 style="margin-top:18px">Rejected rows and their reasons</h2>
-  ${rej.length?`<div class="scroll"><table><thead><tr><th>Reference</th><th>Provider</th><th>Reason</th></tr></thead><tbody>
-  ${rej.map(({s,r})=>`<tr><td>${esc(s.id)}</td><td>${esc(r.name)}</td><td style="white-space:normal">${esc(r.reason)}</td></tr>`).join('')}</tbody></table></div>`:'<p class="muted">Nothing rejected yet.</p>'}
+  return header('Audit log','Append-only record of who did what')+`<div class="page"><div class="card">
+  ${S.audit.length?`<div class="scroll"><table><thead><tr><th>Submission</th><th>Who</th><th>Action</th><th>Detail</th></tr></thead><tbody>
+  ${[...S.audit].reverse().map(a=>`<tr><td>${esc(a.sb)}</td><td>${esc(a.who)}</td><td><span class="pill p-at">${esc(a.action)}</span></td><td style="white-space:normal">${esc(a.detail)}</td></tr>`).join('')}
+  </tbody></table></div><button class="btn sm" data-a="csvaudit" style="margin-top:10px">Export log</button>`
+  :'<p class="muted">No entries yet.</p>'}
   </div></div>`}
 
 function vSet(){
-  const t=S.ui.tests;const E=S.ui.setErr||{};const T=S.set.thresholds;
-  const nf=(l,v,path)=>`<div class="fld" style="min-width:160px"><label for="s-${path}">${l}</label><input id="s-${path}" type="number" data-c="set" data-k="${path}" value="${v}">${E[path]?`<div class="err" role="alert">${E[path]}</div>`:''}</div>`;
-  return header('Settings','Thresholds apply to the dashboard immediately')+`<div class="page"><div class="grid two">
-  <div class="card"><h2>Cycle and thresholds</h2><form data-f="set" novalidate>
-    <div class="row">${nf('Attestation cycle (days)',S.set.cycle,'cycle')}${nf('Identity match minimum (%)',S.set.matchMin,'matchMin')}</div>
-    <div class="row">${nf('First-pass validation (%)',T.firstPass,'t.firstPass')}${nf('Attested within cycle (%)',T.accuracy,'t.accuracy')}${nf('Attested share (%)',T.attested,'t.attested')}</div>
-    <div class="row">${nf('Turnaround (hours)',T.turnaroundH,'t.turnaroundH')}${nf('Activation (%)',T.activation,'t.activation')}${nf('Field freshness (days)',T.freshnessDays,'t.freshnessDays')}</div>
-    <div class="row"><button class="btn primary" type="submit">Apply</button><button class="btn" type="button" data-a="setdef">Restore defaults</button></div>
-  </form></div>
-  <div class="card"><h2>Data and tests</h2>
-    <p>Everything is held in this browser tab and resets on refresh. All records are synthetic: no real clinician, practice or member data is present.</p>
-    <button class="btn danger" data-a="resetask">Reset to the seeded dataset</button>
-    <h2 style="margin-top:18px">Self-tests</h2>
-    <p class="muted">Thirty-two checks of parsing, validation, identity matching, diffing, submission, review and measurement.</p>
+  const t=S.ui.tests;
+  return header('Settings and tests')+`<div class="page"><div class="grid two-e">
+  <div class="card"><h2>Data</h2>
+    <p>All records live in this browser tab and reset on refresh. The dataset is generated from a fixed seed, so every visitor sees the same starting point. No real provider, practice or member data is present, and the registry, licensing board and exclusion list are synthetic stand-ins.</p>
+    <button class="btn danger" data-a="resetask">Reset to the seeded dataset</button></div>
+  <div class="card"><h2>Self-tests</h2>
+    <p class="muted">32 checks of the parser, the validation rules, the diff, the review workflow and the metrics.</p>
     <button class="btn solid" data-a="tests">Run self-tests</button>
-    ${t?`<p><b>${t.filter(x=>x.ok).length} of ${t.length} passed.</b></p>${t.map(x=>`<div style="font-size:12px"><span class="pill ${x.ok?'p-ok':'p-rm'}">${x.ok?'Pass':'Fail'}</span> ${x.id} ${esc(x.name)} ${x.msg?'<span class="err">'+esc(x.msg)+'</span>':''}</div>`).join('')}`:''}
+    ${t?`<p><b>${t.filter(x=>x.ok).length} of ${t.length} passed.</b></p>${t.map(x=>`<div><span class="pill ${x.ok?'p-ok':'p-rm'}">${x.ok?'Pass':'Fail'}</span> ${x.id} ${esc(x.name)} ${x.msg?'<span class="err">'+esc(x.msg)+'</span>':''}</div>`).join('')}`:''}
   </div></div></div>`}
 
 function drawer(){if(!S.ui.drawer)return '';
-  return `<aside class="drawer" role="dialog" aria-label="About this prototype">
-  <div class="row" style="justify-content:space-between"><h2>About</h2><button class="btn sm" data-a="drawer">Close</button></div>
+  return `<aside class="drawer" role="dialog" aria-label="About"><div class="row" style="justify-content:space-between"><h2>About</h2><button class="btn sm" data-a="drawer">Close</button></div>
   <h3 style="margin-top:12px">What it computes</h3>
-  <p>CSV parsing, twelve validation checks each carrying its rule, source and confidence, identity matching against the provider master, the diff of a submitted file against that master, submission versioning, row-level review with reasons, write-through to the master with per-field freshness, downstream event emission, and every dashboard measure.</p>
-  <h3>Rule against inference</h3>
-  <p>Deterministic checks (format, check digit, code set, date logic) are labelled as rules. Checks that consult a reference source (registry, licensing board, exclusion list, the plan master) are labelled as inferred and carry a confidence. The two are never blended, and the dashboard reports attested, inferred and carried-over shares separately.</p>
-  <h3>Reference sources</h3>
-  <p>The registry extract, licensing feed and exclusion list are synthetic stand-ins. A real registry carries a reporting lag, so it is a reference and never ground truth; the submitter attestation is the freshest signal available.</p>
-  <h3>Scope</h3>
-  <p>Nothing is transmitted to any external system. The event feed shows what would be published to each consumer. ${S.world.master.length} listings across three submitter types, generated from a fixed seed, as-of ${ASOF_ISO}.</p></aside>`}
+  <p>CSV parsing and header checking, all ${Object.keys(RULES).length} validation rules with their source and confidence, duplicate and entity matching, the diff against the plan record, the submission and review workflow with its guards, the effect of each approval on the plan record, the downstream event feed, the audit log, and every dashboard figure.</p>
+  <h3>What stands in for production</h3>
+  <p>The registry, the licensing board and the exclusion list are synthetic stand-ins for NPPES, state boards and the OIG exclusion list. The downstream feed shows the event contract rather than calling a live endpoint. Nothing is sent to anyone.</p>
+  <h3>Design rules</h3>
+  <p>Every finding names its rule, its source and its confidence, so a practice can disagree with it. Attested and inferred values are labelled separately and never blended. Every dashboard figure carries a definition, a source, an owner and a threshold.</p></aside>`}
 function dialog(){const d=S.ui.dialog;if(!d)return '';
   return `<div class="overlay"><div class="dlg" role="dialog" aria-modal="true" aria-label="${esc(d.title)}"><h2>${esc(d.title)}</h2>
   <div style="margin:10px 0">${d.html||esc(d.msg)}</div>
-  <div class="row">${d.act?`<button class="btn ${d.danger?'danger':'primary'}" data-a="cfm" id="dfocus">${esc(d.label||'Confirm')}</button>`:''}<button class="btn" data-a="cancel" ${d.act?'':'id="dfocus"'}>${d.act?'Cancel':'Close'}</button></div></div></div>`}
+  <div class="row">${d.act?`<button class="btn ${d.act==='reject'?'danger':'primary'}" data-a="cfm" id="dfocus">${esc(d.label||'Confirm')}</button>`:''}<button class="btn" data-a="cancel" ${d.act?'':'id="dfocus"'}>${d.act?'Cancel':'Close'}</button></div></div></div>`}
 
 function render(){
   const sc=S.ui.screen;
   if(sc==='start'){$('app').innerHTML=vStart()+dialog();return}
-  const V={submit:vSubmit,mysubs:vMySubs,dash:vDash,queue:vQueue,feed:vFeed,audit:vAudit,set:vSet};
-  const body=V[sc]();
-  const nav=S.ui.side==='sub'?NAV_SUB:NAV_PLAN;
+  const V={submit:vSubmit,fix:vFix,status:vStatus,dash:vDash,queue:vQueue,review:vReview,feed:vFeed,audit:vAudit,set:vSet};
+  const body=(V[sc]||vDash)();
+  const nav=S.ui.side==='practice'?NAV_P:NAV_H;
+  const on=sc==='fix'?'submit':sc==='review'?'queue':sc;
   $('app').innerHTML=`<div class="shell"><nav class="rail" aria-label="Main"><div class="logo" aria-hidden="true">RVS</div>
-  ${nav.map(n=>`<button class="nb ${sc===n[2]?'on':''}" data-a="nav" data-v="${n[2]}" ${sc===n[2]?'aria-current="page"':''}><svg viewBox="0 0 24 24" aria-hidden="true">${ICON[n[0]]}</svg>${n[1]}</button>`).join('')}
+  ${nav.map(n=>`<button class="nb ${on===n[2]?'on':''}" data-a="nav" data-v="${n[2]}" ${on===n[2]?'aria-current="page"':''}><svg viewBox="0 0 24 24" aria-hidden="true">${ICON[n[0]]}</svg>${n[1]}</button>`).join('')}
   <span class="sp"></span><button class="nb" data-a="switch"><svg viewBox="0 0 24 24" aria-hidden="true">${ICON.back}</svg>Switch</button></nav>
   <main class="main">${body}</main></div>${drawer()}${dialog()}${S.ui.toast?`<div class="toast ${S.ui.toast.bad?'bad':''}" role="status">${esc(S.ui.toast.msg)}</div>`:''}`;
   const f=$('dfocus');if(f)f.focus()}
 
-/* ---------------- events ---------------- */
-function doValidate(){
-  if(!String(S.ui.raw).trim()){S.ui.err='Choose a file, paste the rows, or load this organisation’s current file.';render();return}
-  const p=parseCSV(S.ui.raw);
-  if(p.error){S.ui.err=p.error;render();return}
-  S.ui.err='';S.ui.parsed=p.rows;S.ui.validated=validateFile(S.world,p.rows);
-  S.ui.step=2;S.ui.filter='all';S.ui.rowOpen=null;render();window.scrollTo(0,0)}
-document.addEventListener('click',e=>{const t=e.target.closest('[data-a]');if(!t)return;const a=t.dataset.a,v=t.dataset.v;
+/* ---------- events ---------- */
+function loadCSV(text,channel){
+  const p=rowsToObjects(parseCSV(text));
+  if(p.error){S.ui.parseErr=p.error;S.ui.csv=text;render();return false}
+  S.ui.parseErr='';
+  const sub=subOf(S.ui.sub);
+  S.ui.draft=buildSubmission(S,sub,p.rows,channel||'portal');
+  S.ui.filter='all';S.ui.screen='submit';render();window.scrollTo(0,0);return true}
+function revalidate(){const d=S.ui.draft;if(!d)return;
+  const rows=d.items.map(i=>i.row);
+  d.items=rows.map(r=>({row:r,v:validateRow(S,r,rows,subOf(d.sub)),d:diffRow(S,r),
+    decision:null,note:''}));
+  d.errorRows=d.items.filter(i=>i.v.errors>0).length}
+document.addEventListener('click',e=>{const t=e.target.closest('[data-a]');if(!t)return;
+  const a=t.dataset.a,v=t.dataset.v;
   switch(a){
-    case 'role':{const parts=v.split(':');
-      if(parts[0]==='sub'){S.ui.side='sub';S.ui.sub=parts[1];S.ui.actor=subOf(parts[1]).label;S.ui.screen='submit';S.ui.step=1;S.ui.raw='';S.ui.err=''}
-      else{S.ui.side='plan';S.ui.actor=parts[1]==='ops'?'Provider data ops':'Compliance';S.ui.screen=parts[1]==='ops'?'queue':'dash'}
-      render();window.scrollTo(0,0);break}
+    case 'role':
+      S.ui.side=v==='practice'?'practice':'plan';
+      S.ui.actor=v==='practice'?'Practice administrator':v==='ops'?'Provider data operations':'Network and compliance';
+      S.ui.screen=v==='practice'?'submit':v==='ops'?'queue':'dash';
+      render();window.scrollTo(0,0);break;
     case 'switch':S.ui.screen='start';S.ui.side=null;S.ui.sel=null;render();break;
     case 'nav':go(v);break;
-    case 'loadsample':S.ui.raw=toCSV(S.rosters[S.ui.sub]);S.ui.err='';render();break;
-    case 'template':S.ui.dialog={title:'Roster template',html:`<p class="muted">Copy this header row into your spreadsheet.</p><textarea rows="3" readonly id="csvbox">${esc(COLS.join(','))}</textarea><button class="btn sm" data-a="copycsv">Copy</button>`};render();break;
-    case 'validate':doValidate();break;
-    case 'vfilter':S.ui.filter=v;S.ui.rowOpen=null;render();break;
-    case 'rowopen':S.ui.rowOpen=S.ui.rowOpen===+v?null:+v;render();break;
-    case 'revalidate':S.ui.validated=validateFile(S.world,S.ui.parsed);toast('Re-validated.');render();break;
-    case 'back1':S.ui.step=1;S.ui.err='';render();break;
-    case 'todiff':S.ui.diff=diffFile(S.world,S.ui.validated,S.ui.sub);S.ui.step=3;S.ui.tab='changed';render();window.scrollTo(0,0);break;
-    case 'dtab':S.ui.tab=v;render();break;
-    case 'back2':S.ui.step=2;render();break;
-    case 'toattest':S.ui.step=4;S.ui.err='';render();window.scrollTo(0,0);break;
-    case 'back3':S.ui.step=3;render();break;
-    case 'dosubmit':{const r=submit(S,S.ui.sub,S.ui.validated,S.ui.diff,S.ui.attest?(S.ui.note||'attested'):'');
-      if(!r.ok){S.ui.err=r.error;toast(r.error,true);render();return}
-      S.ui.err='';S.ui.attest=false;S.ui.note='';S.ui.step=1;S.ui.raw='';S.ui.screen='mysubs';
-      toast('Submitted as '+r.submission.id+'. The plan can review it now.');render();window.scrollTo(0,0);break}
-    case 'qopen':S.ui.sel=v;S.ui.err='';render();window.scrollTo(0,0);break;
-    case 'qback':S.ui.sel=null;render();break;
-    case 'approve':decideRow(S,v,'approve','');render();break;
-    case 'undecide':{const s=S.submissions.find(x=>x.id===String(v).split('|')[0]);const r=s.rows.find(x=>x.k===v);r.decision=null;r.reason='';render();break}
-    case 'rejectask':S.ui.dialog={title:'Reject this row',act:'reject',arg:v,label:'Reject',danger:true,
-      html:`<p>A rejection is returned to the submitter with your reason, so that a resubmission fixes the cause rather than repeating it.</p><div class="fld"><label for="rr">Reason</label><input id="rr" type="text" placeholder="Not contracted at that location"></div>`};render();break;
-    case 'bulkclean':{const s=S.submissions.find(x=>x.id===S.ui.sel);let n=0;
-      s.rows.forEach(r=>{if(!r.warnings&&!r.decision){r.decision='approve';n++}});
-      toast(n+' row'+(n===1?'':'s')+' approved.');render();break}
-    case 'apply':{const r=applySubmission(S,S.world,S.ui.sel);
-      if(!r.ok){S.ui.err=r.error;toast(r.error,true);render();return}
-      S.ui.err='';S.ui.sel=null;S.ui.screen='dash';
-      toast(r.applied+' row'+(r.applied===1?'':'s')+' written to the provider master. Downstream events emitted.');
-      render();window.scrollTo(0,0);break}
-    case 'csvaudit':{const q=x=>'"'+String(x).replace(/"/g,'""')+'"';
-      const csv=['time,actor,organisation,reference,action,detail'].concat(S.audit.map(x=>[new Date(x.t).toISOString(),x.actor,subOf(x.sub)?subOf(x.sub).org:'',x.ref,x.action,x.detail].map(q).join(','))).join('\n');
-      S.ui.dialog={title:'Audit log export',html:`<p class="muted">Copy the text below.</p><textarea rows="8" readonly id="csvbox">${esc(csv)}</textarea><button class="btn sm" data-a="copycsv">Copy</button>`};render();break}
-    case 'copycsv':{try{navigator.clipboard.writeText($('csvbox').value).then(()=>toast('Copied.'),()=>{$('csvbox').select()})}catch(x){$('csvbox').select()}break}
-    case 'resetask':S.ui.dialog={title:'Reset all data?',msg:'This discards every submission and decision made in this session and restores the seeded dataset.',act:'reset',label:'Reset',danger:true};render();break;
-    case 'cancel':S.ui.dialog=null;render();break;
-    case 'cfm':{const d=S.ui.dialog;
-      if(d.act==='reject'){const reason=($('rr')||{}).value||'';
-        const r=decideRow(S,d.arg,'reject',reason);
-        if(!r.ok){toast(r.error,true);return}
-        S.ui.dialog=null;render();break}
-      S.ui.dialog=null;
-      if(d.act==='reset'){S=freshState();S.ui.side='plan';S.ui.actor='Compliance';S.ui.screen='set';toast('Reset to the seeded dataset.')}
-      render();break}
-    case 'tests':S.ui.tests=runTests();render();break;
-    case 'setdef':S.set=JSON.parse(JSON.stringify(DEF));S.ui.setErr=null;S.ui.pendingSet=null;toast('Defaults restored.');render();break;
     case 'drawer':S.ui.drawer=!S.ui.drawer;render();break;
+    case 'sample':loadCSV(sampleFile(S,v),'portal');break;
+    case 'filt':S.ui.filter=v;render();break;
+    case 'fix':S.ui.sel=+v;S.ui.screen='fix';render();window.scrollTo(0,0);break;
+    case 'back':S.ui.screen='submit';render();window.scrollTo(0,0);break;
+    case 'discard':S.ui.draft=null;S.ui.csv='';S.ui.screen='submit';render();break;
+    case 'attest':{const d=S.ui.draft;
+      S.ui.dialog={title:'Attest and submit',act:'attest',label:'Attest and submit',
+        html:`<p>You are confirming that the ${d.rows} rows in this file are accurate as of ${ASOF_ISO}, for ${esc(subOf(d.sub).name)}.</p><p class="muted">Your name, the time and the full file are recorded in the plan’s audit log. The plan reviews changes before they reach the directory.</p>`};
+      render();break}
+    case 'open':S.ui.sel=v;S.ui.screen='review';render();window.scrollTo(0,0);break;
+    case 'dec':{const sb=S.submissions.find(x=>x.id===S.ui.sel);
+      const r=decideItem(S,sb,+v,t.dataset.d,'');
+      if(!r.ok)toast(r.error,true);render();break}
+    case 'rejask':S.ui.noteFor=+v;S.ui.noteVal='';
+      S.ui.dialog={title:'Reject this row',act:'reject',label:'Reject row',
+        html:`<div class="fld"><label for="rn">Reason the practice will see</label><input id="rn" type="text" data-c="note" placeholder="Not confirmed by contracting"></div>`};
+      render();break;
+    case 'allapprove':{const sb=S.submissions.find(x=>x.id===S.ui.sel);
+      sb.items.forEach((it,i)=>{if(it.decision===null)decideItem(S,sb,i,'approve','')});
+      toast('All undecided rows approved.');render();break}
+    case 'finalise':{const sb=S.submissions.find(x=>x.id===S.ui.sel);
+      const r=finaliseSubmission(S,sb,S.ui.actor||'Provider data operations');
+      if(!r.ok){toast(r.error,true);render();break}
+      toast(`Review complete: ${r.applied} approved, ${r.rejected} rejected. ${S.events.length} downstream events emitted.`);
+      S.ui.screen='queue';render();break}
+    case 'kpi':{const k=KPIDEF[v];
+      S.ui.dialog={title:k.name,html:`<p><b>Definition.</b> ${esc(k.def)}</p><p><b>Source.</b> ${esc(k.src)}</p><p><b>Owner.</b> ${esc(k.owner)}</p><p><b>Threshold.</b> ${esc(k.thr)}</p>`};
+      render();break}
+    case 'csvaudit':{const q=x=>'"'+String(x).replace(/"/g,'""')+'"';
+      const csv=['submission,who,action,detail'].concat(S.audit.map(x=>[x.sb,x.who,x.action,x.detail].map(q).join(','))).join('\n');
+      S.ui.dialog={title:'Audit log export',html:`<p class="muted">Copy the text below.</p><textarea rows="8" readonly id="csvbox">${esc(csv)}</textarea>`};
+      render();break}
+    case 'resetask':S.ui.dialog={title:'Reset all data?',msg:'This discards every submission made in this session and restores the seeded dataset.',act:'reset',label:'Reset data'};render();break;
+    case 'tests':S.ui.tests=runTests();render();break;
+    case 'cancel':S.ui.dialog=null;S.ui.noteFor=null;render();break;
+    case 'cfm':{const d=S.ui.dialog;S.ui.dialog=null;
+      if(d.act==='attest'){const sb=S.ui.draft;S.submissions.push(sb);
+        const r=submitSubmission(S,sb,S.ui.actor||'Practice administrator');
+        if(!r.ok){S.submissions.pop();toast(r.error,true);render();break}
+        S.ui.draft=null;S.ui.csv='';S.ui.screen='status';
+        toast('Submitted. The plan sees it in its review queue now.')}
+      else if(d.act==='reject'){const sb=S.submissions.find(x=>x.id===S.ui.sel);
+        const r=decideItem(S,sb,S.ui.noteFor,'reject',S.ui.noteVal);
+        if(!r.ok)toast(r.error,true);S.ui.noteFor=null}
+      else if(d.act==='reset'){S=freshState();S.ui.side='plan';S.ui.actor='Network and compliance';S.ui.screen='set';
+        toast('Data reset to the seeded dataset.')}
+      render();break}
   }});
 document.addEventListener('change',e=>{
-  const f=e.target.closest('[data-c="file"]');
-  if(f&&f.files&&f.files[0]){
-    const file=f.files[0];
-    if(file.size>2e6){S.ui.err='That file is larger than 2 MB. This prototype accepts up to 500 rows.';render();return}
+  const fi=e.target.closest('[data-c="file"]');
+  if(fi&&fi.files&&fi.files[0]){const f=fi.files[0];
+    if(f.size>2e6){toast('That file is larger than 2 MB. Split it and submit in parts.',true);return}
     const rd=new FileReader();
-    rd.onload=()=>{S.ui.raw=String(rd.result);S.ui.err='';doValidate()};
-    rd.onerror=()=>{S.ui.err='The file could not be read.';render()};
-    rd.readAsText(file);return}
-  const t=e.target.closest('[data-c]');if(!t)return;const c=t.dataset.c;
-  if(c==='raw')S.ui.raw=t.value;
-  else if(c==='note')S.ui.note=t.value;
-  else if(c==='attest')S.ui.attest=t.checked;
-  else if(c==='edit')S.ui.parsed[+t.dataset.i][t.dataset.k]=t.value;
-  else if(c==='set'){S.ui.pendingSet=S.ui.pendingSet||{};S.ui.pendingSet[t.dataset.k]=t.value}});
-document.addEventListener('input',e=>{const t=e.target.closest('[data-c="raw"],[data-c="note"],[data-c="edit"],[data-c="set"]');if(!t)return;
-  const c=t.dataset.c;
-  if(c==='raw')S.ui.raw=t.value;
-  else if(c==='note')S.ui.note=t.value;
-  else if(c==='edit')S.ui.parsed[+t.dataset.i][t.dataset.k]=t.value;
-  else{S.ui.pendingSet=S.ui.pendingSet||{};S.ui.pendingSet[t.dataset.k]=t.value}});
-document.addEventListener('submit',e=>{if(e.target.dataset.f!=='set')return;e.preventDefault();
-  const pend=S.ui.pendingSet||{},err={};const ns=JSON.parse(JSON.stringify(S.set));
-  Object.keys(pend).forEach(k=>{const n=Number(pend[k]);
-    const lim=k==='cycle'?[1,730]:k==='t.turnaroundH'?[1,720]:k==='t.freshnessDays'?[1,730]:[0,100];
-    if(pend[k]===''||!Number.isFinite(n)||!Number.isInteger(n)||n<lim[0]||n>lim[1]){err[k]='Enter a whole number from '+lim[0]+' to '+lim[1]+'.';return}
-    if(k.indexOf('t.')===0)ns.thresholds[k.slice(2)]=n;else ns[k]=n});
-  if(Object.keys(err).length){S.ui.setErr=err;toast('Fix the highlighted settings.',true);render();return}
-  S.set=ns;S.ui.setErr=null;S.ui.pendingSet=null;toast('Applied. The dashboard recomputed.');render()});
+    rd.onload=()=>loadCSV(String(rd.result),'portal');
+    rd.onerror=()=>toast('That file could not be read.',true);
+    rd.readAsText(f);return}
+  const t=e.target.closest('[data-c]');if(!t)return;
+  if(t.dataset.c==='csv')S.ui.csv=t.value;
+  else if(t.dataset.c==='note')S.ui.noteVal=t.value;
+  else if(t.dataset.c==='edit'){const d=S.ui.draft;if(d)d.items[S.ui.sel].row[t.dataset.k]=t.value}});
+document.addEventListener('input',e=>{const t=e.target.closest('[data-c="csv"],[data-c="note"],[data-c="edit"]');if(!t)return;
+  if(t.dataset.c==='csv')S.ui.csv=t.value;
+  else if(t.dataset.c==='note')S.ui.noteVal=t.value;
+  else{const d=S.ui.draft;if(d)d.items[S.ui.sel].row[t.dataset.k]=t.value}});
+document.addEventListener('submit',e=>{const f=e.target.dataset.f;if(!f)return;e.preventDefault();
+  if(f==='paste'){const txt=$('csv').value.trim();
+    if(!txt){S.ui.parseErr='Paste a CSV, or start from one of the sample files.';render();return}
+    loadCSV(txt,'portal')}
+  else if(f==='fix'){revalidate();
+    const it=S.ui.draft.items[S.ui.sel];
+    toast(it.v.errors?`${it.v.errors} error${it.v.errors>1?'s':''} still on this row.`:'Row passes every check now.',!!it.v.errors);
+    render()}});
 render();
-window.__DEMO={get S(){return S},runTests,freshState,buildWorld,buildRosters,parseCSV,toCSV,validateFile,validateRow,
-  diffFile,diffCounts,submit,decideRow,applySubmission,kpis,freshness,matchMaster,cleanRowsFor,render,SUBMITTERS,COLS};
+window.__DEMO={get S(){return S},runTests,generate,freshState,parseCSV,rowsToObjects,validateRow,diffRow,
+  buildSubmission,submitSubmission,decideItem,finaliseSubmission,metrics,sampleFile,listedPlan,render};
 </script>
 </body>
 </html>
